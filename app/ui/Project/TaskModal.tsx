@@ -5,6 +5,9 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
+import { useDispatch } from "react-redux";
+import { addTask } from "@/app/redux/taskSlice";
+import { TaskObject } from "@/definition";
 
 const TaskModal = () => {
   const issueTypes = [
@@ -18,6 +21,7 @@ const TaskModal = () => {
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const issueTypeRef = useRef<HTMLDivElement | null>(null);
   const summaryRef = useRef<HTMLInputElement | null>(null);
+  const dispatch = useDispatch();
 
   const toggleIssueType = () => {
     const element = issueTypeRef.current;
@@ -34,10 +38,11 @@ const TaskModal = () => {
     if (summaryRef.current?.value === "") {
       setSummaryError("Summary is required");
     } else {
-      const task = {
-        task: summaryRef.current?.value,
+      const task: TaskObject = {
+        task: summaryRef.current?.value || '' ,
         issueType: issueType.content,
       };
+      dispatch(addTask(task))
     }
   };
 
