@@ -1,7 +1,7 @@
 import { NextAuthOptions, User, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export const authConfig: NextAuthOptions = {
@@ -20,7 +20,7 @@ export const authConfig: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        const user = { id: "1", name: "J Smith", email: "user@nextmail.com" };
+        const user = { id: "1", name: "J Smith", email: "user@nextmail.com",image: "" };
         if (!credentials || !credentials.email || !credentials.password)
           return null;
 
@@ -50,6 +50,5 @@ export async function loginIsRequiredClient() {
     const session = useSession();
     const router = useRouter();
     if(!session) router.push("/");
-    
   }
 }

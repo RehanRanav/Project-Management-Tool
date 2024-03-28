@@ -8,6 +8,7 @@ import { HiBolt } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
 import { addTask } from "@/app/redux/taskSlice";
 import { TaskObject } from "@/definition";
+import { customAlphabet } from "nanoid";
 
 const TaskModal = () => {
   const issueTypes = [
@@ -34,15 +35,24 @@ const TaskModal = () => {
     }
   };
 
+  const generateRandomNumber = () => {
+    const nanoid = customAlphabet("1234567890", 4);
+    const randomNumber = nanoid();
+    return randomNumber;
+  };
+  
   const CreateTask = () => {
     if (summaryRef.current?.value === "") {
       setSummaryError("Summary is required");
     } else {
       const task: TaskObject = {
+        id: generateRandomNumber(),
         task: summaryRef.current?.value || '' ,
         issueType: issueType.content,
+        status: "todo"
       };
       dispatch(addTask(task))
+      closeModal();
     }
   };
 
@@ -53,19 +63,11 @@ const TaskModal = () => {
     if (summaryRef.current) summaryRef.current.value = "";
   };
 
-  const customTheme: CustomFlowbiteTheme["dropdown"] = {
-    floating: {
-      target: "w-full flex justify-between",
-    },
-    inlineWrapper:
-      "flex items-center justify-between w-full border-2 rounded-sm p-2",
-  };
-
   return (
     <div>
       <Button
         color="blue"
-        size="xs"
+        size="sm"
         onClick={() => setOpenModal(true)}
         className="rounded-sm"
       >
