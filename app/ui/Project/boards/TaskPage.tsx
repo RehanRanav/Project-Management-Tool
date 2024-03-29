@@ -2,11 +2,8 @@
 import { selectTask, setTask } from "@/app/redux/taskSlice";
 import { useAppSelector } from "@/app/redux/store";
 import React, { useEffect, useState } from "react";
-import TaskColumn from "@/app/ui/Project/TaskColumn";
-import {
-  arrayMove,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+import TaskColumn from "@/app/ui/Project/boards/TaskColumn";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import {
   DndContext,
   DragEndEvent,
@@ -27,11 +24,9 @@ const TaskPage = () => {
   const [columns, setColumns] = useState<Tasklist[]>(tasks);
 
   useEffect(() => {
-    setColumns(tasks); 
-    console.log(columns);
-      
+    setColumns(tasks);
   }, [tasks]);
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(setTask(columns));
   }, [columns]);
 

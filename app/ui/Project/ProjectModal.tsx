@@ -1,6 +1,6 @@
 "use client";
-import { Button, CustomFlowbiteTheme, Dropdown, Modal } from "flowbite-react";
-import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal } from "flowbite-react";
+import React, { useRef, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
@@ -10,7 +10,7 @@ import { addTask } from "@/app/redux/taskSlice";
 import { TaskObject } from "@/definition";
 import { customAlphabet } from "nanoid";
 
-const TaskModal = () => {
+const ProjectModal = () => {
   const issueTypes = [
     { icon: RiTaskFill, color: `text-sky-400`, content: `Task` },
     { icon: RiBookmarkFill, color: `text-green-400`, content: `Story` },
@@ -169,4 +169,4 @@ const TaskModal = () => {
   );
 };
 
-export default TaskModal;
+export default ProjectModal;
