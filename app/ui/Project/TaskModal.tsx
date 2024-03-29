@@ -49,7 +49,7 @@ const TaskModal = () => {
         id: generateRandomNumber(),
         task: summaryRef.current?.value || '' ,
         issueType: issueType.content,
-        status: "todo"
+        initialStatus: "todo"
       };
       dispatch(addTask(task))
       closeModal();

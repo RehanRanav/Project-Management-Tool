@@ -1,113 +1,149 @@
 "use client";
 import { selectTask, setTask } from "@/app/redux/taskSlice";
 import { useAppSelector } from "@/app/redux/store";
-import React, { useState } from "react";
-import TaskCard from "@/app/ui/Project/TaskCard";
+import React, { useEffect, useState } from "react";
+import TaskColumn from "@/app/ui/Project/TaskColumn";
 import {
-  SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import {
   DndContext,
   DragEndEvent,
-  DragMoveEvent,
-  DragStartEvent,
+  DragOverEvent,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
-  UniqueIdentifier,
   closestCorners,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { useDispatch } from "react-redux";
+import { Tasklist } from "@/definition";
 
 const TaskPage = () => {
   const tasks = useAppSelector(selectTask);
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const dispatch = useDispatch();
-  const TaskStatus = [
-    { title: "To Do", id: "todo" },
-    { title: "In Progress", id: "inprogress" },
-    { title: "Review", id: "review" },
-    { title: "Done", id: "done" },
-  ];
+  const [columns, setColumns] = useState<Tasklist[]>(tasks);
+
+  useEffect(() => {
+    setColumns(tasks); 
+    console.log(columns);
+      
+  }, [tasks]);
+  useEffect(() => {    
+    dispatch(setTask(columns));
+  }, [columns]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 200,
-        tolerance: 6,
-      },
-    }),
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  const getTaskIndex = (id: UniqueIdentifier) => {
-    return tasks.findIndex((item) => item.id === id);
+  const findColumn = (uniqueId: string | null) => {
+    if (!uniqueId) return null;
+
+    if (columns.some((column) => column.id === uniqueId)) {
+      return columns.find((column) => column.id === uniqueId) ?? null;
+    }
+    const id = String(uniqueId);
+    const itemWithColumnId = columns.flatMap((column) => {
+      const columnId = column.id;
+      return column.cards.map((card) => ({
+        itemId: card.id,
+        columnId: columnId,
+      }));
+    });
+
+    const columnId = itemWithColumnId.find((i) => i.itemId === id)?.columnId;
+    return columns.find((column) => column.id === columnId);
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    const { id } = active;
-    setActiveId(id);
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over, delta } = event;
+    const activeId = String(active.id);
+    const overId = over ? String(over.id) : null;
+    const activeColumn = findColumn(activeId);
+    const overColumn = findColumn(overId);
+
+    if (!activeColumn || !overColumn || activeColumn === overColumn) {
+      return null;
+    }
+
+    setColumns((prevState) => {
+      const activeItems = activeColumn.cards;
+      const overItems = overColumn.cards;
+      const activeIndex = activeItems.findIndex((i) => i.id === activeId);
+      const overIndex = overItems.findIndex((i) => i.id === overId);
+      const newIndex = () => {
+        const putOnBelowLastItem =
+          overIndex === overItems.length - 1 && delta.y > 0;
+        const modifier = putOnBelowLastItem ? 1 : 0;
+        return overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+      };
+      return prevState.map((i) => {
+        if (i.id === activeColumn.id) {
+          return { ...i, cards: activeItems.filter((i) => i.id !== activeId) };
+        } else if (i.id === overColumn.id) {
+          return {
+            ...i,
+            cards: [
+              ...overItems.slice(0, newIndex()),
+              activeItems[activeIndex],
+              ...overItems.slice(newIndex(), overItems.length),
+            ],
+          };
+        } else {
+          return i;
+        }
+      });
+    });
   };
-  const handleDragMove = (event: DragMoveEvent) => {
+
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active && over && active.id !== over.id) {
-      const activeitemIndex = getTaskIndex(active.id);
-      const overitemIndex = getTaskIndex(over.id);
-      const updatedTasks = arrayMove(
-        tasks,
-        activeitemIndex as number,
-        overitemIndex as number
-      );
-      dispatch(setTask(updatedTasks));
+    const activeId = String(active.id);
+    const overId = over ? String(over.id) : null;
+    const activeColumn = findColumn(activeId);
+    const overColumn = findColumn(overId);
+    if (!activeColumn || !overColumn || activeColumn !== overColumn) {
+      return null;
+    }
+    const activeIndex = activeColumn.cards.findIndex((i) => i.id === activeId);
+    const overIndex = overColumn.cards.findIndex((i) => i.id === overId);
+    if (activeIndex !== overIndex) {
+      setColumns((prevState) => {
+        return prevState.map((column) => {
+          if (column.id === activeColumn.id) {
+            return {
+              ...column,
+              cards: arrayMove(overColumn.cards, activeIndex, overIndex),
+            };
+          } else {
+            return column;
+          }
+        });
+      });
     }
   };
-  const handleDragEnd = (event: DragEndEvent) => {};
 
   return (
     <div className="h-full w-full grid grid-cols-4 gap-2 p-1">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragMove={handleDragMove}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        {TaskStatus.map((column) => (
-          <SortableContext items={tasks.map((task) => task.id)}>
-            <div className="h-screen bg-gray-100 w-full">
-              <div className="w-full text-center text-gray-500">
-                {column.title}
-              </div>
-              <div className="p-2 flex flex-col gap-3">
-                {tasks &&
-                  tasks.map(
-                    (task) =>
-                      task.status === column.id && (
-                        <TaskCard
-                          id={task.id}
-                          task={task.task}
-                          issueType={task.issueType}
-                          status={task.status}
-                          key={task.id}
-                        />
-                      )
-                  )}
-              </div>
-            </div>
-          </SortableContext>
+        {tasks.map((column) => (
+          <TaskColumn
+            title={column.title}
+            id={column.id}
+            cards={column.cards}
+          />
         ))}
       </DndContext>
     </div>

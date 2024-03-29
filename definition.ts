@@ -4,8 +4,10 @@ export interface TaskObject{
     id: UniqueIdentifier;
     task: string;
     issueType: string;
-    status: string;
+    initialStatus?: UniqueIdentifier;
 }
 export interface Tasklist{
-    taskList: TaskObject[];
+    id: UniqueIdentifier;
+    title: string;
+    cards: TaskObject[];
 }
