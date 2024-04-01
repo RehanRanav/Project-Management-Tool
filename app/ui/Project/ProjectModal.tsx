@@ -19,14 +19,19 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
   const dispatch = useDispatch();
   const Project = useAppSelector(selectProject);
 
-  useEffect(()=>{
-    console.log(Project);
-      if(Project.title && Project.id && Project.description && Project.createdBy && Project.date){
-        redirect("/project/boards")
-      }
-  },[Project])
+  useEffect(() => {
+    if (
+      Project.title &&
+      Project.id &&
+      Project.description &&
+      Project.createdBy &&
+      Project.date
+    ) {
+      redirect("/project/boards");
+    }
+  }, [Project]);
 
-  const CreateProject =async () => {
+  const CreateProject = async () => {
     if (
       projectRef.current?.value === "" ||
       descriptionRef.current?.value === "" ||

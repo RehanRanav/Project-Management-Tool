@@ -1,42 +1,47 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { TaskObject, Tasklist } from "@/definition";
+import { ProjectTask, TaskObject, Tasklist } from "@/definition";
+import { addTaskToFirebase } from "@/app/lib/actions";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
-const initialState: Tasklist[] = [
-  {
-    id: "todo",
-    title: "To do",
-    cards: [],
-  },
-  {
-    id: "inprogress",
-    title: "In Progress",
-    cards: [],
-  },
-  {
-    id: "review",
-    title: "Review",
-    cards: [],
-  },
-  {
-    id: "done",
-    title: "Done",
-    cards: [],
-  },
-];
+const initialState: ProjectTask = {
+  userId: "",
+  tasklist: [
+    {
+      id: "todo",
+      title: "To do",
+      cards: [],
+    },
+    {
+      id: "inprogress",
+      title: "In Progress",
+      cards: [],
+    },
+    {
+      id: "review",
+      title: "Review",
+      cards: [],
+    },
+    {
+      id: "done",
+      title: "Done",
+      cards: [],
+    },
+  ],
+};
 
 const taskSlice: any = createSlice({
   name: "task",
   initialState,
   reducers: {
-    setTask: (state, action: PayloadAction<Tasklist[] | undefined>) => {
+    setTask: (state, action: PayloadAction<UniqueIdentifier | undefined>) => {
       if (action.payload) {
-        return action.payload;
+        state.userId = action.payload;
+        addTaskToFirebase(state);
       }
-      return state;
     },
     addTask: (state, action: PayloadAction<TaskObject | undefined>) => {
       if (action.payload) {
-        return state.map((task) => {
+        state.tasklist = state.tasklist.map((task) => {
           if (task.id == action.payload?.initialStatus) {
             return {
               ...task,
@@ -46,11 +51,15 @@ const taskSlice: any = createSlice({
           return task;
         });
       }
-      return state;
+    },
+    updateTask: (state, action: PayloadAction<Tasklist[] | undefined>) => {
+      if (action.payload) {
+        state.tasklist = action.payload;
+      }
     },
   },
 });
 
-export const { addTask, setTask } = taskSlice.actions;
-export const selectTask = (state: { task: Tasklist[] }) => state.task;
+export const { addTask, setTask, updateTask } = taskSlice.actions;
+export const selectTask = (state: { task: ProjectTask }) => state.task.tasklist;
 export default taskSlice.reducer;

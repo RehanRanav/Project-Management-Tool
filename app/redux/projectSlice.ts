@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ProjectData, TaskObject, Tasklist } from "@/definition";
+import { ProjectData } from "@/definition";
+import { addProjectToFirebase } from "@/app/lib/actions"
 
 const initialState: ProjectData = {
   id: "",
@@ -15,6 +16,7 @@ const projectSlice: any = createSlice({
   reducers: {
     addProject: (state, action: PayloadAction<ProjectData | undefined>) => {
       if (action.payload) {
+        addProjectToFirebase(action.payload);
         return action.payload;
       }
       return state;

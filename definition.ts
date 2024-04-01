@@ -11,6 +11,10 @@ export interface Tasklist{
     title: string;
     cards: TaskObject[];
 }
+export interface ProjectTask{
+    tasklist: Tasklist[];
+    userId: UniqueIdentifier;
+}
 export interface ProjectData{
     id: UniqueIdentifier;
     title: string;
