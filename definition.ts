@@ -11,3 +11,13 @@ export interface Tasklist{
     title: string;
     cards: TaskObject[];
 }
+export interface ProjectData{
+    id: UniqueIdentifier;
+    title: string;
+    description: string;
+    date: string;
+    createdBy?: string;
+}
+export interface ProjectModalProps{
+    email: string;
+}

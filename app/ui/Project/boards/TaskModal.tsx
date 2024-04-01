@@ -8,7 +8,7 @@ import { HiBolt } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
 import { addTask } from "@/app/redux/taskSlice";
 import { TaskObject } from "@/definition";
-import { customAlphabet } from "nanoid";
+import { generateRandomNumber } from "@/app/lib/utils";
 
 const TaskModal = () => {
   const issueTypes = [
@@ -35,11 +35,7 @@ const TaskModal = () => {
     }
   };
 
-  const generateRandomNumber = () => {
-    const nanoid = customAlphabet("1234567890", 4);
-    const randomNumber = nanoid();
-    return randomNumber;
-  };
+  
   
   const CreateTask = () => {
     if (summaryRef.current?.value === "") {

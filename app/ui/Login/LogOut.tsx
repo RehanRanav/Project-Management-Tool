@@ -11,10 +11,10 @@ const LogOut = () => {
   };
   return (
     <div
-      className="flex gap-2 items-center text-base font-normal"
+      className="flex w-full gap-2 items-center text-base font-normal"
       onClick={handleSignOut}
     >
-      <HiLogout size={30} />
+        <HiLogout size={30} />
       Log Out
     </div>
   );

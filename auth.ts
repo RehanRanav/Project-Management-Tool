@@ -5,6 +5,9 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export const authConfig: NextAuthOptions = {
+  pages:{
+    signIn: "/"
+  },
   providers: [
     CredentialsProvider({
       name: "Sign in",

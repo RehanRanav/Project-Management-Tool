@@ -135,6 +135,7 @@ const TaskPage = () => {
       >
         {tasks.map((column) => (
           <TaskColumn
+          key={column.id}
             title={column.title}
             id={column.id}
             cards={column.cards}
