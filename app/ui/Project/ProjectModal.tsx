@@ -2,11 +2,12 @@
 import { generateRandomNumber } from "@/app/lib/utils";
 import { addProject, selectProject } from "@/app/redux/projectSlice";
 import { useAppSelector } from "@/app/redux/store";
+import { setTask } from "@/app/redux/taskSlice";
 import { ProjectData, ProjectModalProps } from "@/definition";
-import { Button, Card, Modal } from "flowbite-react";
+import { Button, Modal } from "flowbite-react";
 import { redirect } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { HiDotsHorizontal, HiPlus } from "react-icons/hi";
+import { HiDotsHorizontal } from "react-icons/hi";
 import { PiWarningDiamondFill } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 
@@ -49,6 +50,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
         createdBy: email,
       };
       await dispatch(addProject(project));
+      await dispatch(setTask(project.id));
     }
   };
 
@@ -60,9 +62,14 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
 
   return (
     <div className="cursor-pointer hover:opacity-80">
-      <Card className="w-fit bg-gray-200" onClick={() => setOpenModal(true)}>
-        <HiPlus size={50} className="text-gray-400" />
-      </Card>
+      <Button
+        color="blue"
+        size="sm"
+        onClick={() => setOpenModal(true)}
+        className="rounded-sm"
+      >
+        Create
+      </Button>
       <Modal
         dismissible
         initialFocus={projectRef}

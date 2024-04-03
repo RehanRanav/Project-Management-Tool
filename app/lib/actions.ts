@@ -1,8 +1,6 @@
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase.config";
 import { ProjectData, ProjectTask } from "@/definition";
-import { selectProject } from "@/app/redux/projectSlice";
-import { useSelector } from "react-redux";
 
 export const addProjectToFirebase = async (projectdata: ProjectData) => {
   try {
@@ -17,5 +15,13 @@ export const addProjectToFirebase = async (projectdata: ProjectData) => {
 };
 
 export const addTaskToFirebase = async (taskdata: ProjectTask) => {
-  console.log(taskdata);
+  try {
+    if (taskdata.projectId !== "") {
+      await addDoc(collection(db, "tasks"), {
+        taskdata,
+      });
+    }
+  } catch (error) {
+    console.error("Error adding tasks to Firebase:", error);
+  }
 };

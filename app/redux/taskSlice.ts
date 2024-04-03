@@ -4,7 +4,7 @@ import { addTaskToFirebase } from "@/app/lib/actions";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
 const initialState: ProjectTask = {
-  userId: "",
+  projectId: "",
   tasklist: [
     {
       id: "todo",
@@ -35,8 +35,9 @@ const taskSlice: any = createSlice({
   reducers: {
     setTask: (state, action: PayloadAction<UniqueIdentifier | undefined>) => {
       if (action.payload) {
-        state.userId = action.payload;
-        addTaskToFirebase(state);
+        state.projectId = action.payload;
+        const stateCopy = { ...state };
+        addTaskToFirebase(stateCopy);
       }
     },
     addTask: (state, action: PayloadAction<TaskObject | undefined>) => {

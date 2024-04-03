@@ -13,7 +13,7 @@ export interface Tasklist{
 }
 export interface ProjectTask{
     tasklist: Tasklist[];
-    userId: UniqueIdentifier;
+    projectId: UniqueIdentifier;
 }
 export interface ProjectData{
     id: UniqueIdentifier;
@@ -23,5 +23,8 @@ export interface ProjectData{
     createdBy?: string;
 }
 export interface ProjectModalProps{
+    email: string;
+}
+export interface TaskIndexProps{
     email: string;
 }

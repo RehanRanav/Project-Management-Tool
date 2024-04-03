@@ -1,5 +1,5 @@
 "use client";
-import { selectTask, setTask, updateTask } from "@/app/redux/taskSlice";
+import { selectTask, updateTask } from "@/app/redux/taskSlice";
 import { useAppSelector } from "@/app/redux/store";
 import React, { useEffect, useState } from "react";
 import TaskColumn from "@/app/ui/Project/boards/TaskColumn";
@@ -17,30 +17,18 @@ import {
 } from "@dnd-kit/core";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
-import { selectProject } from "@/app/redux/projectSlice";
-import { redirect } from "next/navigation";
 
 const TaskPage = () => {
   const tasks = useAppSelector(selectTask);
-  const Project = useAppSelector(selectProject);
   const dispatch = useDispatch();
   const [columns, setColumns] = useState<Tasklist[]>(tasks);
-
-  useEffect(()=>{
-    console.log(Project);
-    if(Project.id !==""){
-      dispatch(setTask(Project.id))
-    }else{
-      redirect("/project")
-    }
-  },[]);
 
   useEffect(() => {
     setColumns(tasks);
   }, [tasks]);
   useEffect(() => {
     dispatch(updateTask(columns));
-  }, [columns]);
+  }, [columns, dispatch]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -147,7 +135,7 @@ const TaskPage = () => {
       >
         {tasks.map((column) => (
           <TaskColumn
-          key={column.id}
+            key={column.id}
             title={column.title}
             id={column.id}
             cards={column.cards}
