@@ -28,3 +28,6 @@ export interface ProjectModalProps{
 export interface TaskIndexProps{
     email: string;
 }
+export interface ProjectCardProps{
+    project: ProjectData;
+}

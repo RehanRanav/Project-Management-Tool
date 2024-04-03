@@ -129,6 +129,19 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
                 className="rounded-sm border-2 border-blue-400 w-fit"
               />
             </div>
+            
+            <div className="flex flex-col gap-2">
+              <label className="relative w-fit pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
+                Add Team
+              </label>
+              <input
+                ref={dateRef}
+                type="text"
+                required
+                className="rounded-sm border-2 border-blue-400 w-full"
+              />
+            </div>
+
           </div>
         </Modal.Body>
         <Modal.Footer>
