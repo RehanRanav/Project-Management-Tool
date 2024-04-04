@@ -1,11 +1,11 @@
 "use client";
-import { generateRandomNumber } from "@/app/lib/utils";
+import { emailValidation, generateRandomNumber } from "@/app/lib/utils";
 import { addProject, selectProject } from "@/app/redux/projectSlice";
 import { useAppSelector } from "@/app/redux/store";
 import { setTask } from "@/app/redux/taskSlice";
 import { ProjectData, ProjectModalProps } from "@/definition";
 import { Button, Modal } from "flowbite-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { PiWarningDiamondFill } from "react-icons/pi";
@@ -13,40 +13,41 @@ import { useDispatch } from "react-redux";
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [teamMember, setTeamMember] = useState<string[] | []>([]);
   const projectRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const dateRef = useRef<HTMLInputElement | null>(null);
   const emailsRef = useRef<HTMLInputElement | null>(null);
-  const [teamMember, setTeamMember] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const Project = useAppSelector(selectProject);
-
-  useEffect(() => {
-    if (
-      Project.title &&
-      Project.id &&
-      Project.description &&
-      Project.createdBy &&
-      Project.date
-    ) {
-      redirect("/project/boards");
-    }
-  }, [Project]);
-  useEffect(() => {
-    console.log(teamMember);
-  }, [teamMember]);
+  const router = useRouter();
 
   const CreateProject = async () => {
     if (
       projectRef.current?.value === "" ||
       descriptionRef.current?.value === "" ||
-      dateRef.current?.value === ""
+      dateRef.current?.value === "" ||
+      emailsRef.current?.value === ""
     ) {
       setError("Please fill all fields");
       return;
     }
-    getEmails();
+    const emailInput = emailsRef.current;
+    const emailList = emailInput?.value.split(",") || [];
+
+    if (emailList?.length > 0) {
+      emailList?.forEach((email) => {
+        email = email.trim();
+
+        const isValid = emailValidation(email);
+        console.log(isValid);
+
+        if (!isValid) {
+          setError("Invalid email address");
+          return;
+        }
+      });
+    }
 
     const project: ProjectData = {
       id: generateRandomNumber(),
@@ -56,36 +57,17 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
         ? new Date(dateRef.current.value).toLocaleDateString()
         : new Date().toLocaleDateString(),
       createdBy: email,
-      team: teamMember,
+      team: emailList,
     };
     await dispatch(addProject(project));
     await dispatch(setTask(project.id));
+    router.push("/project/boards");
   };
 
   const closeModal = () => {
     setOpenModal(false);
     setError(null);
     if (projectRef.current) projectRef.current.value = "";
-  };
-
-  const getEmails = () => {
-    const emailInput = emailsRef.current;
-    const emailList = emailInput?.value.split(",") || [];
-
-    if (emailList?.length > 0) {
-      emailList?.forEach((email) => {
-        email = email.trim();
-
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isValid = emailPattern.test(email);
-
-        if (!isValid) {
-          setError("Invalid email address");
-          return;
-        }
-      });
-    }
-    setTeamMember(emailList);
   };
 
   return (

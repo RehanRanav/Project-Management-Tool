@@ -5,3 +5,9 @@ export const generateRandomNumber = () => {
   const randomNumber = nanoid();
   return randomNumber;
 };
+
+export const emailValidation = (email: string) => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isValid = emailPattern.test(email);
+  return isValid;
+};

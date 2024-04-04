@@ -14,7 +14,10 @@ const TasksIndex: React.FC<TaskIndexProps> = ({ email }) => {
       const items: any[] = [];
 
       querySnapshot.forEach((doc) => {
-        if (doc.data().projectdata.createdBy == email)
+        if (
+          doc.data().projectdata.createdBy == email ||
+          doc.data().projectdata.team.indexOf(email) > -1
+        )
           items.push({ ...doc.data() });
       });
       setProjects(items);
@@ -24,7 +27,7 @@ const TasksIndex: React.FC<TaskIndexProps> = ({ email }) => {
   }, []);
 
   return (
-    <div className="flex gap-4 p-4">
+    <div className="flex flex-wrap gap-4 p-4">
       {projects.length > 0 &&
         projects.map((project, index) => (
           <ProjectCard project={project.projectdata} key={index} />
