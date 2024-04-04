@@ -8,6 +8,7 @@ const initialState: ProjectData = {
   description: "",
   date: "",
   createdBy: "",
+  team: [],
 };
 
 const projectSlice: any = createSlice({

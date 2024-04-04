@@ -21,6 +21,7 @@ export interface ProjectData{
     description: string;
     date: string;
     createdBy?: string;
+    team: string[];
 }
 export interface ProjectModalProps{
     email: string;

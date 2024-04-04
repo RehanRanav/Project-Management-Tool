@@ -16,6 +16,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
   const projectRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const dateRef = useRef<HTMLInputElement | null>(null);
+  const emailsRef = useRef<HTMLInputElement | null>(null);
+  const [teamMember, setTeamMember] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const Project = useAppSelector(selectProject);
@@ -31,6 +33,9 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
       redirect("/project/boards");
     }
   }, [Project]);
+  useEffect(() => {
+    console.log(teamMember);
+  }, [teamMember]);
 
   const CreateProject = async () => {
     if (
@@ -39,25 +44,48 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
       dateRef.current?.value === ""
     ) {
       setError("Please fill all fields");
-    } else {
-      const project: ProjectData = {
-        id: generateRandomNumber(),
-        title: projectRef.current?.value || "",
-        description: descriptionRef.current?.value || "",
-        date: dateRef.current?.value
-          ? new Date(dateRef.current.value).toLocaleDateString()
-          : new Date().toLocaleDateString(),
-        createdBy: email,
-      };
-      await dispatch(addProject(project));
-      await dispatch(setTask(project.id));
+      return;
     }
+    getEmails();
+
+    const project: ProjectData = {
+      id: generateRandomNumber(),
+      title: projectRef.current?.value || "",
+      description: descriptionRef.current?.value || "",
+      date: dateRef.current?.value
+        ? new Date(dateRef.current.value).toLocaleDateString()
+        : new Date().toLocaleDateString(),
+      createdBy: email,
+      team: teamMember,
+    };
+    await dispatch(addProject(project));
+    await dispatch(setTask(project.id));
   };
 
   const closeModal = () => {
     setOpenModal(false);
     setError(null);
     if (projectRef.current) projectRef.current.value = "";
+  };
+
+  const getEmails = () => {
+    const emailInput = emailsRef.current;
+    const emailList = emailInput?.value.split(",") || [];
+
+    if (emailList?.length > 0) {
+      emailList?.forEach((email) => {
+        email = email.trim();
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValid = emailPattern.test(email);
+
+        if (!isValid) {
+          setError("Invalid email address");
+          return;
+        }
+      });
+    }
+    setTeamMember(emailList);
   };
 
   return (
@@ -129,19 +157,13 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
                 className="rounded-sm border-2 border-blue-400 w-fit"
               />
             </div>
-            
+
             <div className="flex flex-col gap-2">
               <label className="relative w-fit pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
                 Add Team
               </label>
-              <input
-                ref={dateRef}
-                type="text"
-                required
-                className="rounded-sm border-2 border-blue-400 w-full"
-              />
+              <input ref={emailsRef} type="email" />
             </div>
-
           </div>
         </Modal.Body>
         <Modal.Footer>
