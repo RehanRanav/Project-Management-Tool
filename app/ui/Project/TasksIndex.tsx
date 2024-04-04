@@ -27,7 +27,7 @@ const TasksIndex: React.FC<TaskIndexProps> = ({ email }) => {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-4 p-4">
+    <div className="flex flex-wrap gap-8 p-4">
       {projects.length > 0 &&
         projects.map((project, index) => (
           <ProjectCard project={project.projectdata} key={index} />

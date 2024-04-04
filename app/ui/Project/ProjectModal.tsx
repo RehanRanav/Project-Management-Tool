@@ -85,6 +85,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
         initialFocus={projectRef}
         show={openModal}
         onClose={closeModal}
+        size={"xl"}
       >
         <Modal.Header>Create Project</Modal.Header>
         <Modal.Body>
@@ -144,7 +145,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
               <label className="relative w-fit pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
                 Add Team
               </label>
-              <input ref={emailsRef} type="email" />
+              <input
+                ref={emailsRef}
+                type="email"
+                className="rounded-sm border-2 border-blue-400 appearance-none"
+              />
             </div>
           </div>
         </Modal.Body>
