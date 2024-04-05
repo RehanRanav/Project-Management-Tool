@@ -55,8 +55,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                     Team Members:
                   </h3>
                 </div>
-                {project.team.map((member) => (
-                  <div className="px-3 py-2">
+                {project.team.map((member,index) => (
+                  <div className="px-3 py-2" key={index}>
                     <p>{member}</p>
                   </div>
                 ))}
