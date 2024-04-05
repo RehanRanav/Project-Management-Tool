@@ -1,7 +1,7 @@
 import React from 'react'
-import Jiralogo from '@/app/ui/Project/Jiralogo'
-import UserInfo from '@/app/ui/Project/UserInfo'
-import ProjectModal from '@/app/ui/Project/ProjectModal'
+import Jiralogo from '@/app/ui/Projects/Jiralogo'
+import UserInfo from '@/app/ui/Projects/UserInfo'
+import ProjectModal from '@/app/ui/Projects/ProjectModal'
 import { getServerSession } from 'next-auth'
 import { authConfig } from '@/auth'
 

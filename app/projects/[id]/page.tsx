@@ -1,4 +1,4 @@
-import ResizableLayout from "@/app/ui/Project/boards/ResizableLayout";
+import ResizableLayout from "@/app/ui/Projects/boards/ResizableLayout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -1,5 +1,4 @@
-import { selectProject, setProject } from "@/app/redux/projectSlice";
-import { useAppSelector } from "@/app/redux/store";
+import { setProject } from "@/app/redux/projectSlice";
 import { ProjectCardProps } from "@/definition";
 import Image from "next/image";
 import React, { useRef } from "react";
@@ -12,12 +11,11 @@ import { Popover } from "flowbite-react";
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const CardRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
-  const Project = useAppSelector(selectProject);
   const router = useRouter();
 
   const handleClick = async () => {
     await dispatch(setProject(project));
-    router.push("/project/boards");
+    router.push(`/projects/${project.id}`);
   };
 
   return (
@@ -55,7 +53,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                     Team Members:
                   </h3>
                 </div>
-                {project.team.map((member,index) => (
+                {project.team.map((member, index) => (
                   <div className="px-3 py-2" key={index}>
                     <p>{member}</p>
                   </div>

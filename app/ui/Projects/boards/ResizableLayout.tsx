@@ -1,18 +1,21 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
-import TaskPage from "@/app/ui/Project/boards/TaskPage";
+import TaskPage from "@/app/ui/Projects/boards/TaskPage";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { useAppSelector } from "@/app/redux/store";
-import { selectProject } from "@/app/redux/projectSlice";
+import { useParams } from "next/navigation";
 
 const ResizableLayout = () => {
-  const Project = useAppSelector(selectProject);
-  console.log(Project);
-
+  const params = useParams();
+  console.log(params.id);
+  useEffect(()=>{
+    if(params.id){
+      
+    }
+  },[]);
   return (
     <PanelGroup autoSaveId="Tasks" direction="horizontal">
-      <Panel minSize={1} maxSize={50} >
+      <Panel minSize={1} maxSize={50}>
         <div className="flex flex-col py-2 ">
           <div className="flex gap-2 mt-4 justify-center items-center">
             <Image

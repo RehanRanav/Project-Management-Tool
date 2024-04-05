@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   const session = await getServerSession(authConfig);
 
-  if (session) return redirect("/project");
+  if (session) return redirect("/projects");
 
   return (
     <main className="flex items-center justify-center md:h-screen">

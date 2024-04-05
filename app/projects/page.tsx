@@ -1,8 +1,8 @@
 import { authConfig, loginIsRequiredServer } from "@/auth";
 import { getServerSession } from "next-auth";
 import { Metadata } from "next";
-import Header from "@/app/ui/Project/ProjectHeader";
-import TasksIndex from "@/app/ui/Project/TasksIndex";
+import Header from "@/app/ui/Projects/ProjectHeader";
+import ProjectIndex from "@/app/ui/Projects/ProjectIndex";
 
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ const Project = async () => {
   return (
     <>
       <Header />
-      <TasksIndex email={session?.user?.email || ""}/>
+      <ProjectIndex email={session?.user?.email || ""}/>
     </>
   );
 };

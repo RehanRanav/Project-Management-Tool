@@ -2,7 +2,7 @@
 import { selectTask, updateTask } from "@/app/redux/taskSlice";
 import { useAppSelector } from "@/app/redux/store";
 import React, { useEffect, useState } from "react";
-import TaskColumn from "@/app/ui/Project/boards/TaskColumn";
+import TaskColumn from "@/app/ui/Projects/boards/TaskColumn";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import {
   DndContext,

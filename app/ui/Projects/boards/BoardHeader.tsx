@@ -1,5 +1,5 @@
-import Jiralogo from "@/app/ui/Project/Jiralogo";
-import TaskModal from "@/app/ui/Project/boards/TaskModal";
+import Jiralogo from "@/app/ui/Projects/Jiralogo";
+import TaskModal from "@/app/ui/Projects/boards/TaskModal";
 import UserInfo from "../UserInfo";
 
 const Header = () => {
