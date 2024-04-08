@@ -1,7 +1,9 @@
 "use client";
-import { emailValidation, generateRandomNumber } from "@/app/lib/utils";
-import { addProject, selectProject } from "@/app/redux/projectSlice";
-import { useAppSelector } from "@/app/redux/store";
+import {
+  emailValidation,
+  generateId,
+} from "@/app/lib/utils";
+import { addProject } from "@/app/redux/projectSlice";
 import { setTask } from "@/app/redux/taskSlice";
 import { ProjectData, ProjectModalProps } from "@/definition";
 import { Button, Modal } from "flowbite-react";
@@ -13,7 +15,7 @@ import { useDispatch } from "react-redux";
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
   const [openModal, setOpenModal] = useState(false);
-  const [teamMember, setTeamMember] = useState<string[] | []>([]);
+  const [disableBtn, setDisableBtn] = useState(false);
   const projectRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const dateRef = useRef<HTMLInputElement | null>(null);
@@ -32,6 +34,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
       setError("Please fill all fields");
       return;
     }
+    setDisableBtn(true);
     const emailInput = emailsRef.current;
     const emailList = emailInput?.value.split(",") || [];
 
@@ -50,7 +53,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
     }
 
     const project: ProjectData = {
-      id: generateRandomNumber(),
+      id: generateId(),
       title: projectRef.current?.value || "",
       description: descriptionRef.current?.value || "",
       date: dateRef.current?.value
@@ -61,7 +64,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
     };
     await dispatch(addProject(project));
     await dispatch(setTask(project.id));
-    router.push("/project/boards");
+    router.push(`/projects/${project.id}`);
   };
 
   const closeModal = () => {
@@ -166,6 +169,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
               size="sm"
               onClick={CreateProject}
               className="rounded-sm"
+              disabled={disableBtn}
             >
               Create
             </Button>

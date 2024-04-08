@@ -14,19 +14,17 @@ const ResizableLayout = () => {
   const dispatch = useDispatch();
   const project = useAppSelector(selectProject);
 
-  useEffect(()=>{
-    console.log(project);
-    
-  },[project])
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (params.id) {
           const res = await getProjectData(params.id as string);
 
-          if (res) {
-            await dispatch(setProject(res));
-          }
+          console.log(res);
+          
+          // if (res) {
+          //   await dispatch(setProject(res));
+          // }
         }
       } catch (error) {
         console.error("Error fetching project data:", error);
@@ -37,9 +35,9 @@ const ResizableLayout = () => {
   }, []);
   return (
     <PanelGroup autoSaveId="Tasks" direction="horizontal">
-      <Panel minSize={1} maxSize={50} defaultSize={15}>
-        <div className="flex flex-col py-2 ">
-          <div className="flex gap-2 mt-4 justify-center items-center">
+      <Panel minSize={1} maxSize={16} defaultSize={15}>
+        <div className="flex flex-col gap-2 text-base">
+          <div className="flex gap-2 p-4 mt-4 justify-start items-center bg-gray-100">
             <Image
               src="/assets/project-icon.svg"
               alt="Project Icon"
@@ -47,7 +45,24 @@ const ResizableLayout = () => {
               height={30}
               className="rounded"
             />
-            <span className="whitespace-nowrap ">{project.title}</span>
+            <span className="whitespace-nowrap font-semibold">
+              {project.title}
+            </span>
+          </div>
+          <div className="p-2 flex flex-col gap-2 m-0.5 rounded text-sm">
+            <div className="flex flex-col gap-1">
+              <span className="font-medium">Project Description:</span>
+              <div className="bg-gray-100 h-24 rounded p-1 overflow-y-scroll">
+                {project.description}
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="font-medium">CreatedBy:</span>
+              <div className="bg-gray-100 rounded p-1">
+                {project.createdBy}
+              </div>
+            </div>
+            <div></div>
           </div>
         </div>
       </Panel>

@@ -3,12 +3,34 @@ import {
   collection,
   query,
   onSnapshot,
-  where,
   getDocs,
+  where,
 } from "firebase/firestore";
 import { db } from "@/firebase.config";
 import { ProjectData, ProjectTask } from "@/definition";
-import { any } from "zod";
+import { Session } from "next-auth";
+
+export const addUsertoDatabase = async (user: Session | null) => {
+  try {
+    const email = user?.user?.email;
+    if (!email) {
+      return;
+    }
+    const q = query(
+      collection(db, "users"),
+      where("Userdata.email", "==", email)
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      await addDoc(collection(db, "users"), {
+        Userdata: user.user,
+      });
+    }
+  } catch (error) {
+    console.log("error while Add user", error);
+  }
+};
 
 export const addProjectToFirebase = async (projectdata: ProjectData) => {
   try {
@@ -60,11 +82,36 @@ export const getAllProjectsData = (
 export const getProjectData = async (id: string) => {
   try {
     let project: any = {};
-    const q = query(collection(db, "projects"));
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.id", "==", id)
+    );
     const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      if ((doc.data().projectdata.id == id)) {
-        project = doc.data().projectdata;
+
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    querySnapshot.forEach(async (doc) => {
+      const createdByEmail = doc.data().projectdata.createdBy;
+      const userRef = collection(db, "users");
+      const userQuery = query(
+        userRef,
+        where("Userdata.email", "==", createdByEmail)
+      );
+      const UserQuerySnapshot = await getDocs(userQuery);
+      if (!UserQuerySnapshot.empty) {
+        const userData = UserQuerySnapshot.docs[0].data().Userdata;
+        project = {
+          projectdata: doc.data().projectdata,
+          userdata: userData,
+        };
+        console.log("1", project);
+      } else {
+        project = {
+          projectdata: doc.data().projectdata,
+          userdata: null,
+        };
       }
     });
 
