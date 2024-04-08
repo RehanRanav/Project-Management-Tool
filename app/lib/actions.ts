@@ -1,7 +1,14 @@
-import { addDoc, collection, query, onSnapshot, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  query,
+  onSnapshot,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "@/firebase.config";
 import { ProjectData, ProjectTask } from "@/definition";
-import { SetStateAction } from "react";
+import { any } from "zod";
 
 export const addProjectToFirebase = async (projectdata: ProjectData) => {
   try {
@@ -47,5 +54,22 @@ export const getAllProjectsData = (
     });
   } catch (error) {
     console.error("Error while getting project All data: ", error);
+  }
+};
+
+export const getProjectData = async (id: string) => {
+  try {
+    let project: any = {};
+    const q = query(collection(db, "projects"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      if ((doc.data().projectdata.id == id)) {
+        project = doc.data().projectdata;
+      }
+    });
+
+    return project;
+  } catch (error) {
+    console.log(error);
   }
 };
