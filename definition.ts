@@ -32,3 +32,8 @@ export interface ProjectIndexProps{
 export interface ProjectCardProps{
     project: ProjectData;
 }
+export interface UserData{
+    name?: string;
+    email?: string;
+    image?: string;
+}

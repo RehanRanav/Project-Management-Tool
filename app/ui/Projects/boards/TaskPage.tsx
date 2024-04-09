@@ -126,22 +126,25 @@ const TaskPage = () => {
   };
 
   return (
-    <div className="h-full w-full grid grid-cols-4 gap-2 p-1">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        {tasks.map((column) => (
-          <TaskColumn
-            key={column.id}
-            title={column.title}
-            id={column.id}
-            cards={column.cards}
-          />
-        ))}
-      </DndContext>
+    <div className="flex flex-col gap-2">
+      
+      <div className="h-full w-full grid grid-cols-4 gap-2 p-1">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          {tasks.map((column) => (
+            <TaskColumn
+              key={column.id}
+              title={column.title}
+              id={column.id}
+              cards={column.cards}
+            />
+          ))}
+        </DndContext>
+      </div>
     </div>
   );
 };

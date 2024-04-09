@@ -81,7 +81,6 @@ export const getAllProjectsData = (
 
 export const getProjectData = async (id: string) => {
   try {
-    let project: any = {};
     const q = query(
       collection(db, "projects"),
       where("projectdata.id", "==", id)
@@ -92,31 +91,29 @@ export const getProjectData = async (id: string) => {
       return null;
     }
 
-    querySnapshot.forEach(async (doc) => {
-      const createdByEmail = doc.data().projectdata.createdBy;
-      const userRef = collection(db, "users");
-      const userQuery = query(
-        userRef,
-        where("Userdata.email", "==", createdByEmail)
-      );
-      const UserQuerySnapshot = await getDocs(userQuery);
-      if (!UserQuerySnapshot.empty) {
-        const userData = UserQuerySnapshot.docs[0].data().Userdata;
-        project = {
-          projectdata: doc.data().projectdata,
-          userdata: userData,
-        };
-        console.log("1", project);
-      } else {
-        project = {
-          projectdata: doc.data().projectdata,
-          userdata: null,
-        };
-      }
-    });
+    const doc = querySnapshot.docs[0];
+
+    const createdByEmail = doc.data().projectdata.createdBy;
+    const userRef = collection(db, "users");
+    const userQuery = query(
+      userRef,
+      where("Userdata.email", "==", createdByEmail)
+    );
+    const userQuerySnapshot = await getDocs(userQuery);
+
+    let userData = null;
+    if (!userQuerySnapshot.empty) {
+      userData = userQuerySnapshot.docs[0].data().Userdata;
+    }
+
+    const project = {
+      projectdata: doc.data().projectdata,
+      userdata: userData,
+    };
 
     return project;
   } catch (error) {
     console.log(error);
+    return null;
   }
 };
