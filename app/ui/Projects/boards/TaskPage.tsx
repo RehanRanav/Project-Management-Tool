@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/core";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
+import TaskHead from "./TaskHead";
 
 const TaskPage = () => {
   const tasks = useAppSelector(selectTask);
@@ -126,9 +127,9 @@ const TaskPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      
-      <div className="h-full w-full grid grid-cols-4 gap-2 p-1">
+    <div className="flex flex-col gap-2 px-4 py-6">
+      <TaskHead/>
+      <div className="h-full w-full grid grid-cols-4 gap-2">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}

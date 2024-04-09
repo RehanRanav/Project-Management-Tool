@@ -7,7 +7,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase.config";
-import { ProjectData, ProjectTask } from "@/definition";
+import { EmailObj, ProjectData, ProjectTask } from "@/definition";
 import { Session } from "next-auth";
 
 export const addUsertoDatabase = async (user: Session | null) => {
@@ -68,7 +68,9 @@ export const getAllProjectsData = (
       querySnapshot.forEach((doc) => {
         if (
           doc.data().projectdata.createdBy == email ||
-          doc.data().projectdata.team.indexOf(email) > -1
+          doc
+            .data()
+            .projectdata.team.some((team: EmailObj) => team.email == email)
         )
           items.push({ ...doc.data() });
       });
@@ -112,6 +114,24 @@ export const getProjectData = async (id: string) => {
     };
 
     return project;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const getUserData = async (email: string) => {
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("Userdata.email", "==", email)
+    );
+    let userData = null;
+    const userQuerySnapshot = await getDocs(q);
+    if (!userQuerySnapshot.empty) {
+      userData = userQuerySnapshot.docs[0].data().Userdata;
+    }
+    return userData;
   } catch (error) {
     console.log(error);
     return null;

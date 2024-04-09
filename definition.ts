@@ -1,4 +1,5 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
+import { MouseEventHandler } from "react";
 
 export interface TaskObject{
     id: UniqueIdentifier;
@@ -21,16 +22,19 @@ export interface ProjectData{
     description: string;
     date: string;
     createdBy?: string;
-    team: string[];
+    team: EmailObj[];
 }
-export interface ProjectModalProps{
+export interface EmailObj{
     email: string;
+    approval: boolean;
 }
-export interface ProjectIndexProps{
+export interface ProjectPageProps{
     email: string;
 }
 export interface ProjectCardProps{
     project: ProjectData;
+    email:string;
+    ClickFunction?: MouseEventHandler<HTMLDivElement>;
 }
 export interface UserData{
     name?: string;

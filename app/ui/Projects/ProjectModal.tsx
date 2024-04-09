@@ -2,7 +2,7 @@
 import { emailValidation, generateId } from "@/app/lib/utils";
 import { addProject } from "@/app/redux/projectSlice";
 import { setTask } from "@/app/redux/taskSlice";
-import { ProjectData, ProjectModalProps } from "@/definition";
+import { EmailObj, ProjectData, ProjectPageProps } from "@/definition";
 import { Button, Modal } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -11,7 +11,7 @@ import { HiPlus } from "react-icons/hi2";
 import { PiWarningDiamondFill } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 
-const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
+const ProjectModal: React.FC<ProjectPageProps> = ({ email }) => {
   const [openModal, setOpenModal] = useState(false);
   const [disableBtn, setDisableBtn] = useState(false);
   const projectRef = useRef<HTMLInputElement | null>(null);
@@ -30,44 +30,50 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ email }) => {
       emailsRef.current?.value === ""
     ) {
       setError("Please fill all fields");
+      setDisableBtn(false);
       return;
     }
     setDisableBtn(true);
     const emailInput = emailsRef.current;
-    const emailList = emailInput?.value.split(",") || [];
+    const emailList: EmailObj[] =
+      emailInput?.value
+        .split(",")
+        .map((email) => ({ email: email.trim(), approval: false })) || [];
 
+    let isValid = false;
     if (emailList?.length > 0) {
-      emailList?.forEach((email) => {
-        email = email.trim();
-
-        const isValid = emailValidation(email);
-        console.log(isValid);
+      emailList?.forEach((emailObj) => {
+        isValid = emailValidation(emailObj.email);
 
         if (!isValid) {
           setError("Invalid email address");
+          setDisableBtn(false);
           return;
         }
       });
     }
 
-    const project: ProjectData = {
-      id: generateId(),
-      title: projectRef.current?.value || "",
-      description: descriptionRef.current?.value || "",
-      date: dateRef.current?.value
-        ? new Date(dateRef.current.value).toLocaleDateString()
-        : new Date().toLocaleDateString(),
-      createdBy: email,
-      team: emailList,
-    };
-    await dispatch(addProject(project));
-    await dispatch(setTask(project.id));
-    router.push(`/projects/${project.id}`);
+    if (isValid) {
+      const project: ProjectData = {
+        id: generateId(),
+        title: projectRef.current?.value || "",
+        description: descriptionRef.current?.value || "",
+        date: dateRef.current?.value
+          ? new Date(dateRef.current.value).toLocaleDateString()
+          : new Date().toLocaleDateString(),
+        createdBy: email,
+        team: emailList,
+      };
+      await dispatch(addProject(project));
+      await dispatch(setTask(project.id));
+      router.push(`/projects/${project.id}`);
+    }
   };
 
   const closeModal = () => {
     setOpenModal(false);
     setError(null);
+    setDisableBtn(false);
     if (projectRef.current) projectRef.current.value = "";
   };
 
