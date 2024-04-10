@@ -14,7 +14,7 @@ export default async function Home() {
   const session = await getServerSession(authConfig);
 
   if (session) {
-    addUsertoDatabase(session);
+    addUsertoDatabase(session);    
     redirect("/projects");
   }
 

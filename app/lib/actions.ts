@@ -6,6 +6,8 @@ import {
   getDocs,
   where,
   updateDoc,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "@/firebase.config";
 import { EmailObj, ProjectData, ProjectTask } from "@/definition";
@@ -218,6 +220,26 @@ export const removeFromTeam = async (projectId: string, email: string) => {
       }
       return true;
     }
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const deleteProjectFromFirbase = async (projectId: string) => {
+  try {
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.id", "==", projectId)
+    );
+    const projectQuerySnapshot = await getDocs(q);
+    if (!projectQuerySnapshot.empty) {
+      const docId = projectQuerySnapshot.docs[0].id;
+      await deleteDoc(doc(db, "projects", docId));
+    } else {
+      return null;
+    }
+    return true;
   } catch (error) {
     console.log(error);
     return null;

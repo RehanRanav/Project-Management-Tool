@@ -2,18 +2,21 @@ import { setProject } from "@/app/redux/projectSlice";
 import { ProjectCardProps, UserData } from "@/definition";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { MdOutlineWatchLater } from "react-icons/md";
+import { MdOutlineWatchLater, MdDelete } from "react-icons/md";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { differenceInDays } from "@/app/lib/utils";
-import { getUserData } from "@/app/lib/actions";
+import { deleteProjectFromFirbase, getUserData } from "@/app/lib/actions";
 import {
-  CustomFlowbiteTheme,
   Dropdown,
   DropdownItem,
   Tooltip,
 } from "flowbite-react";
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, email, ClickFunction }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({
+  project,
+  email,
+  ClickFunction,
+}) => {
   const [deadlineLabel, setDeadlineLabel] = useState("");
   const CardRef = useRef<HTMLDivElement | null>(null);
   const [userData, setUserData] = useState<UserData>({});
@@ -36,15 +39,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, email, ClickFunction
     fetchUserData();
   }, []);
 
-  const handleMenuClick = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleMenuClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
   };
 
-  const customtheme: CustomFlowbiteTheme["dropdown"] = {
-    inlineWrapper: "flex item-center z-50",
-  };
+  const deleteProject = async (id:string)=>{
+    const res= await deleteProjectFromFirbase(id);
+  }
 
   return (
     <div
@@ -62,19 +63,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, email, ClickFunction
             className="rounded"
           />
           {project.createdBy == email && (
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={
-                <div className="p-2 hover:bg-gray-100 rounded-sm">
-                  <HiDotsHorizontal />
-                </div>
-              }
+            <div
+              className="p-2 hover:bg-gray-100 rounded-sm"
               onClick={handleMenuClick}
-              theme={customtheme}
             >
-              <DropdownItem>Delete</DropdownItem>
-            </Dropdown>
+              <Dropdown arrowIcon={false} inline label={<HiDotsHorizontal />}>
+                <DropdownItem onClick={()=>deleteProject(project.id as string)}>
+                  <MdDelete size={20} /> Delete project
+                </DropdownItem>
+              </Dropdown>
+            </div>
           )}
         </div>
         <div className="text-base font-bold tracking-tight text-gray-900 dark:text-white">
@@ -96,12 +94,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, email, ClickFunction
           <span>{deadlineLabel}</span>
         </div>
         <div>
-        <Tooltip content={`Created By: ${userData.name}`} placement="left" className="text-xs">
-          <img
-            src={userData.image}
-            alt="Profile"
-            className="h-7 w-7 rounded-md"
-          />
+          <Tooltip
+            content={`Created By: ${userData.name}`}
+            placement="left"
+            className="text-xs"
+          >
+            <img
+              src={userData.image}
+              alt="Profile"
+              className="h-7 w-7 rounded-md"
+            />
           </Tooltip>
         </div>
       </div>

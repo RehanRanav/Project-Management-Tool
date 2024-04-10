@@ -21,12 +21,13 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
   }, []);
 
   const handleAcceptInvite = async (id: string) => {
+    
     const res = await updateProjectApproval(id, email);
     if (res) {
       router.push(`/projects/${id}`);
     }
   };
-
+  
   const handleCancelInvite = async (id: string) => {
     const res = await removeFromTeam(id, email);
     console.log(res);
@@ -71,12 +72,10 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
                         to get started on the <b>{project.projectdata.title}</b>{" "}
                         Project. Once you accept, you’ll be able to access it.
                       </h3>
-                      <div className="flex justify-center gap-4">
+                      <div className="flex justify-center gap-4 z-10">
                         <Button
                           color="blue"
-                          onClick={() =>
-                            handleAcceptInvite(project.projectdata.id)
-                          }
+                          onClick={() =>handleAcceptInvite(project.projectdata.id)}
                         >
                           {"Accept Invitation"}
                         </Button>
