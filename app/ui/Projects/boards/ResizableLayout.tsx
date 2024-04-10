@@ -12,7 +12,7 @@ import { UserData } from "@/definition";
 import { IoIosArrowDown } from "react-icons/io";
 
 const ResizableLayout = () => {
-  const [userdata, setUserdata] = useState<UserData>({});
+  const [userdata, setUserdata] = useState<UserData[]>([]);
   const [isDescriptionOverflowed, setIsDescriptionOverflowed] = useState(false);
   const params = useParams();
   const dispatch = useDispatch();
@@ -20,16 +20,17 @@ const ResizableLayout = () => {
   const descriptionRef = useRef<HTMLDivElement | null>(null);
   const expandBtnRef = useRef<HTMLButtonElement | null>(null);
   const [expandToggle, setExpandToggle] = useState(false);
+  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (params.id) {
           const res = await getProjectData(params.id as string);
-
+          
           if (res) {
-            await dispatch(setProject(res.projectdata));
             setUserdata(res.userdata);
+            await dispatch(setProject(res.projectdata));
           }
         }
       } catch (error) {
@@ -98,17 +99,22 @@ const ResizableLayout = () => {
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="font-medium">CreatedBy:</span>
-              <div className="bg-gray-100 rounded p-1 flex items-center gap-2 cursor-pointer">
-                <img
-                  src={userdata.image}
-                  alt="Profile"
-                  className="h-8 w-8 rounded-full"
-                />
-                <span>{userdata.name}</span>
-              </div>
+              <span className="font-medium">Team:</span>
+              {userdata.length > 0 &&
+                userdata.map((team: UserData, index: number) => (
+                  <div
+                    className="bg-gray-100 rounded p-1 flex items-center gap-2 cursor-pointer"
+                    key={index}
+                  >
+                    <img
+                      src={team.image}
+                      alt="Profile"
+                      className="h-8 w-8 rounded-full"
+                    />
+                    <span>{team.name}</span>
+                  </div>
+                ))}
             </div>
-            <div></div>
           </div>
         </div>
       </Panel>

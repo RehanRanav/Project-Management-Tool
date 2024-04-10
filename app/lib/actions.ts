@@ -5,6 +5,7 @@ import {
   onSnapshot,
   getDocs,
   where,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase.config";
 import { EmailObj, ProjectData, ProjectTask } from "@/definition";
@@ -103,9 +104,27 @@ export const getProjectData = async (id: string) => {
     );
     const userQuerySnapshot = await getDocs(userQuery);
 
-    let userData = null;
+    let userData = [];
     if (!userQuerySnapshot.empty) {
-      userData = userQuerySnapshot.docs[0].data().Userdata;
+      userData.push(userQuerySnapshot.docs[0].data().Userdata);
+    }
+
+    const teamArr = doc.data().projectdata.team;
+    if (teamArr.length > 0) {
+      await Promise.all(
+        teamArr.map(async (member: EmailObj) => {
+          if (member.approval) {
+            const teamMemberQuery = query(
+              userRef,
+              where("Userdata.email", "==", member.email)
+            );
+
+            const teamMemberQuerySnapshot = await getDocs(teamMemberQuery);
+
+            userData.push(teamMemberQuerySnapshot.docs[0].data().Userdata);
+          }
+        })
+      );
     }
 
     const project = {
@@ -132,6 +151,73 @@ export const getUserData = async (email: string) => {
       userData = userQuerySnapshot.docs[0].data().Userdata;
     }
     return userData;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const updateProjectApproval = async (
+  projectId: string,
+  email: string
+) => {
+  try {
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.id", "==", projectId)
+    );
+
+    const projectQuerySnapshot = await getDocs(q);
+    if (!projectQuerySnapshot.empty) {
+      const getProject = projectQuerySnapshot.docs[0];
+      const projectTeamData = getProject.data().projectdata.team;
+      const teamIndex = projectTeamData.findIndex(
+        (member: EmailObj) => member.email === email
+      );
+
+      if (teamIndex !== -1) {
+        const updatedTeam = [...projectTeamData];
+        updatedTeam[teamIndex].approval = true;
+        await updateDoc(getProject.ref, {
+          "projectdata.team": updatedTeam,
+        });
+      } else {
+        return null;
+      }
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const removeFromTeam = async (projectId: string, email: string) => {
+  try {
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.id", "==", projectId)
+    );
+
+    const projectQuerySnapshot = await getDocs(q);
+    if (!projectQuerySnapshot.empty) {
+      const getProject = projectQuerySnapshot.docs[0];
+      const projectTeamData = getProject.data().projectdata.team;
+      const teamIndex = projectTeamData.findIndex(
+        (member: EmailObj) => member.email === email
+      );
+
+      if (teamIndex !== -1) {
+        const updatedTeam = [...projectTeamData];
+        updatedTeam.splice(teamIndex, 1);
+        await updateDoc(getProject.ref, {
+          "projectdata.team": updatedTeam,
+        });
+      } else {
+        return null;
+      }
+      return true;
+    }
   } catch (error) {
     console.log(error);
     return null;

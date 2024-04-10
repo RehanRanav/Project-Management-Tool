@@ -4,20 +4,18 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineWatchLater } from "react-icons/md";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { useDispatch } from "react-redux";
 import { differenceInDays } from "@/app/lib/utils";
 import { getUserData } from "@/app/lib/actions";
 import {
   CustomFlowbiteTheme,
   Dropdown,
-  DropdownHeader,
   DropdownItem,
+  Tooltip,
 } from "flowbite-react";
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, email, ClickFunction }) => {
   const [deadlineLabel, setDeadlineLabel] = useState("");
   const CardRef = useRef<HTMLDivElement | null>(null);
-  const dispatch = useDispatch();
   const [userData, setUserData] = useState<UserData>({});
 
   useEffect(() => {
@@ -83,7 +81,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, email, ClickFunction
           {project.title}
         </div>
       </div>
-      <div className="font-normal text-xs text-gray-700 dark:text-gray-400 h-14 line-clamp-3 leading-relaxed">
+      <div className="font-normal text-xs text-gray-700 bg-gray-50/95 rounded-sm p-0.5 dark:text-gray-400 h-14 line-clamp-3 leading-relaxed">
         {project.description}
       </div>
       <div className="flex justify-between">
@@ -98,11 +96,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, email, ClickFunction
           <span>{deadlineLabel}</span>
         </div>
         <div>
+        <Tooltip content={`Created By: ${userData.name}`} placement="left" className="text-xs">
           <img
             src={userData.image}
             alt="Profile"
-            className="h-8 w-8 rounded-full"
+            className="h-7 w-7 rounded-md"
           />
+          </Tooltip>
         </div>
       </div>
     </div>
