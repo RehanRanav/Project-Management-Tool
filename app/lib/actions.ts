@@ -159,6 +159,33 @@ export const getUserData = async (email: string) => {
   }
 };
 
+export const updateProjectdata = async (
+  projectId: string,
+  key: string,
+  value: string
+) => {
+  try {
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.id", "==", projectId)
+    );
+
+    const projectQuerySnapshot = await getDocs(q);
+    if (!projectQuerySnapshot.empty) {
+      const getProject = projectQuerySnapshot.docs[0];
+      await updateDoc(getProject.ref, {
+        [`projectdata.${key}`]: value,
+      });
+    } else {
+      return null;
+    }
+    return true;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 export const updateProjectApproval = async (
   projectId: string,
   email: string

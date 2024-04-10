@@ -79,7 +79,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           {project.title}
         </div>
       </div>
-      <div className="font-normal text-xs text-gray-700 bg-gray-50/95 rounded-sm p-0.5 dark:text-gray-400 h-14 line-clamp-3 leading-relaxed">
+      <div className="font-normal text-xs text-gray-700 rounded-sm p-0.5 dark:text-gray-400 h-14 line-clamp-3 leading-relaxed">
         {project.description}
       </div>
       <div className="flex justify-between">
