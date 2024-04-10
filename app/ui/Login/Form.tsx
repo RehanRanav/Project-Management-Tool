@@ -20,7 +20,7 @@ const LoginForm = () => {
     });
 
     if (signInResponse && !signInResponse.error) {
-      router.push("/project");
+      router.push("/projects");
     } else {
       setError("Your Email or Password is wrong!");
     }

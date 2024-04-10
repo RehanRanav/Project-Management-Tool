@@ -1,4 +1,4 @@
-import Header from "@/app/ui/Project/boards/BoardHeader";
+import Header from "@/app/ui/Projects/boards/BoardHeader";
 
 export default function ProjectLayout({
   children,

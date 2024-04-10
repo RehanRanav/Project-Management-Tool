@@ -23,7 +23,7 @@ export const authConfig: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        const user = { id: "1", name: "J Smith", email: "user@nextmail.com",image: "" };
+        const user = { id: "1", name: "J Smith", email: "user@nextmail.com",image: "https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200" };
         if (!credentials || !credentials.email || !credentials.password)
           return null;
 

@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
+import { addUsertoDatabase } from "../lib/actions";
 
 export const metadata: Metadata = {
   title: "SignIn",
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
 export default async function Home() {
   const session = await getServerSession(authConfig);
 
-  if (session) return redirect("/project");
+  if (session) {
+    addUsertoDatabase(session);    
+    redirect("/projects");
+  }
 
   return (
     <main className="flex items-center justify-center md:h-screen">

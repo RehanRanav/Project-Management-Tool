@@ -2,7 +2,7 @@
 import { selectTask, updateTask } from "@/app/redux/taskSlice";
 import { useAppSelector } from "@/app/redux/store";
 import React, { useEffect, useState } from "react";
-import TaskColumn from "@/app/ui/Project/boards/TaskColumn";
+import TaskColumn from "@/app/ui/Projects/boards/TaskColumn";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import {
   DndContext,
@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/core";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
+import TaskHead from "./TaskHead";
 
 const TaskPage = () => {
   const tasks = useAppSelector(selectTask);
@@ -126,22 +127,25 @@ const TaskPage = () => {
   };
 
   return (
-    <div className="h-full w-full grid grid-cols-4 gap-2 p-1">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        {tasks.map((column) => (
-          <TaskColumn
-            key={column.id}
-            title={column.title}
-            id={column.id}
-            cards={column.cards}
-          />
-        ))}
-      </DndContext>
+    <div className="flex flex-col gap-2 px-4 py-6">
+      <TaskHead/>
+      <div className="h-full w-full grid grid-cols-4 gap-2">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          {tasks.map((column) => (
+            <TaskColumn
+              key={column.id}
+              title={column.title}
+              id={column.id}
+              cards={column.cards}
+            />
+          ))}
+        </DndContext>
+      </div>
     </div>
   );
 };

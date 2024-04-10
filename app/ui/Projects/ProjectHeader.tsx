@@ -1,15 +1,14 @@
-import Jiralogo from "@/app/ui/Project/Jiralogo";
-import TaskModal from "@/app/ui/Project/boards/TaskModal";
-import UserInfo from "../UserInfo";
+import React from "react";
+import Jiralogo from "@/app/ui/Projects/Jiralogo";
+import UserInfo from "@/app/ui/Projects/UserInfo";
 
-const Header = () => {
+const Header = async () => {
   return (
     <div className="flex p-4 border-b items-center justify-between">
       <div className="flex items-center justify-between gap-4">
         <div className="cursor-pointer hover:bg-gray-200 p-1 rounded-sm">
           <Jiralogo />
         </div>
-        <TaskModal />
       </div>
       <div className="font-medium flex items-center gap-4">
         <UserInfo />

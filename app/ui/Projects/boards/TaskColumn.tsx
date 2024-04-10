@@ -1,6 +1,6 @@
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import React from "react";
-import TaskCard from "@/app/ui/Project/boards/TaskCard";
+import TaskCard from "@/app/ui/Projects/boards/TaskCard";
 import { useDroppable } from "@dnd-kit/core";
 import { Tasklist } from "@/definition";
 
