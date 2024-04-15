@@ -1,11 +1,13 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { MouseEventHandler } from "react";
+import { IconType } from "react-icons";
 
 export interface TaskObject{
     id: UniqueIdentifier;
     task: string;
     issueType: string;
     initialStatus?: UniqueIdentifier;
+    assignTo: UserData;
 }
 export interface Tasklist{
     id: UniqueIdentifier;
@@ -40,4 +42,10 @@ export interface UserData{
     name?: string;
     email?: string;
     image?: string;
+}
+
+export interface issueType{
+    icon: IconType;
+    color: string;
+    content: string;
 }

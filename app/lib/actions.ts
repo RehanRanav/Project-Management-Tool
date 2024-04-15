@@ -48,7 +48,7 @@ export const addProjectToFirebase = async (projectdata: ProjectData) => {
 };
 
 export const setTaskToFirebase = async (taskdata: ProjectTask) => {
-  try {
+  try {    
     if (taskdata.projectId !== "") {
       await addDoc(collection(db, "tasks"), {
         taskdata,
@@ -284,7 +284,9 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
 };
 
 export const addTasktoFirbase = async (taskdata: ProjectTask) => {
-  try {
+  try {    
+    console.log(taskdata);
+    
     if (taskdata.projectId !== "") {
       const q = query(
         collection(db, "tasks"),

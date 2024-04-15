@@ -39,8 +39,8 @@ const taskSlice: any = createSlice({
     ) => {
       if (action.payload) {
         state.projectId = action.payload;
-        const stateCopy = { ...state };
-        setTaskToFirebase(stateCopy);
+        state.tasklist = initialState.tasklist
+        setTaskToFirebase(state);
       }
     },
     
@@ -52,7 +52,7 @@ const taskSlice: any = createSlice({
     },
 
     addTask: (state, action: PayloadAction<TaskObject | undefined>) => {
-      if (action.payload) {
+      if (action.payload) {        
         state.tasklist = state.tasklist.map((task) => {
           if (task.id == action.payload?.initialStatus) {
             return {
@@ -62,13 +62,14 @@ const taskSlice: any = createSlice({
           }
           return task;
         });
-        addTasktoFirbase({ ...state });
+        addTasktoFirbase({ projectId: state.projectId, tasklist: state.tasklist });
       }
     },
     updateTask: (state, action: PayloadAction<Tasklist[] | undefined>) => {
       if (action.payload) {
         state.tasklist = action.payload;
       }
+      addTasktoFirbase({ projectId: state.projectId, tasklist: state.tasklist });
     },
   },
 });
