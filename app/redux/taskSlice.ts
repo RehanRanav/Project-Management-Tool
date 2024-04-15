@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ProjectTask, TaskObject, Tasklist } from "@/definition";
-import { addTaskToFirebase } from "@/app/lib/actions";
+import { addTasktoFirbase, setTaskToFirebase } from "@/app/lib/actions";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
 const initialState: ProjectTask = {
@@ -33,13 +33,24 @@ const taskSlice: any = createSlice({
   name: "task",
   initialState,
   reducers: {
-    setTask: (state, action: PayloadAction<UniqueIdentifier | undefined>) => {
+    setTasktoFirebase: (
+      state,
+      action: PayloadAction<UniqueIdentifier | undefined>
+    ) => {
       if (action.payload) {
         state.projectId = action.payload;
         const stateCopy = { ...state };
-        addTaskToFirebase(stateCopy);
+        setTaskToFirebase(stateCopy);
       }
     },
+    
+    setTask: (state, action: PayloadAction<ProjectTask | undefined>) => {
+      if (action.payload) {
+        return action.payload;
+      }
+      return state;
+    },
+
     addTask: (state, action: PayloadAction<TaskObject | undefined>) => {
       if (action.payload) {
         state.tasklist = state.tasklist.map((task) => {
@@ -51,6 +62,7 @@ const taskSlice: any = createSlice({
           }
           return task;
         });
+        addTasktoFirbase({ ...state });
       }
     },
     updateTask: (state, action: PayloadAction<Tasklist[] | undefined>) => {
@@ -61,6 +73,7 @@ const taskSlice: any = createSlice({
   },
 });
 
-export const { addTask, setTask, updateTask } = taskSlice.actions;
+export const { addTask, setTask , setTasktoFirebase, updateTask } =
+  taskSlice.actions;
 export const selectTask = (state: { task: ProjectTask }) => state.task.tasklist;
 export default taskSlice.reducer;

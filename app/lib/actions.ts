@@ -47,7 +47,7 @@ export const addProjectToFirebase = async (projectdata: ProjectData) => {
   }
 };
 
-export const addTaskToFirebase = async (taskdata: ProjectTask) => {
+export const setTaskToFirebase = async (taskdata: ProjectTask) => {
   try {
     if (taskdata.projectId !== "") {
       await addDoc(collection(db, "tasks"), {
@@ -95,10 +95,19 @@ export const getProjectData = async (id: string) => {
     if (querySnapshot.empty) {
       return null;
     }
+    const projectdoc = querySnapshot.docs[0];
 
-    const doc = querySnapshot.docs[0];
+    const taskQuery = query(
+      collection(db, "tasks"),
+      where("taskdata.projectId", "==", id)
+    );
+    const taskQuerySnapshot = await getDocs(taskQuery);
+    if (taskQuerySnapshot.empty) {
+      return null;
+    }
+    const taskdoc = taskQuerySnapshot.docs[0];
 
-    const createdByEmail = doc.data().projectdata.createdBy;
+    const createdByEmail = projectdoc.data().projectdata.createdBy;
     const userRef = collection(db, "users");
     const userQuery = query(
       userRef,
@@ -111,7 +120,7 @@ export const getProjectData = async (id: string) => {
       userData.push(userQuerySnapshot.docs[0].data().Userdata);
     }
 
-    const teamArr = doc.data().projectdata.team;
+    const teamArr = projectdoc.data().projectdata.team;
     if (teamArr.length > 0) {
       await Promise.all(
         teamArr.map(async (member: EmailObj) => {
@@ -130,8 +139,9 @@ export const getProjectData = async (id: string) => {
     }
 
     const project = {
-      projectdata: doc.data().projectdata,
+      projectdata: projectdoc.data().projectdata,
       userdata: userData,
+      taskdata: taskdoc.data().taskdata,
     };
 
     return project;
@@ -267,6 +277,30 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
       return null;
     }
     return true;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const addTasktoFirbase = async (taskdata: ProjectTask) => {
+  try {
+    if (taskdata.projectId !== "") {
+      const q = query(
+        collection(db, "tasks"),
+        where("taskdata.projectId", "==", taskdata.projectId)
+      );
+      const taskQuerySnapshot = await getDocs(q);
+      if (!taskQuerySnapshot.empty) {
+        const getTask = taskQuerySnapshot.docs[0];
+        await updateDoc(getTask.ref, {
+          "taskdata.tasklist": taskdata.tasklist,
+        });
+      } else {
+        return null;
+      }
+      return true;
+    }
   } catch (error) {
     console.log(error);
     return null;

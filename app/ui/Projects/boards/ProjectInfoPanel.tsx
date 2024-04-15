@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { selectProject, setProject } from "@/app/redux/projectSlice";
 import { useAppSelector } from "@/app/redux/store";
 import { UserData } from "@/definition";
+import { setTask } from "@/app/redux/taskSlice";
 
 const ProjectInfoPanel = () => {
   const project = useAppSelector(selectProject);
@@ -33,6 +34,7 @@ const ProjectInfoPanel = () => {
           if (res) {
             setUserdata(res.userdata);
             await dispatch(setProject(res.projectdata));
+            await dispatch(setTask(res.taskdata))            
           }
         }
       } catch (error) {

@@ -4,6 +4,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ProjectInfoPanel from "@/app/ui/Projects/boards/ProjectInfoPanel";
 
 const ResizableLayout = () => {
+  
   return (
     <PanelGroup autoSaveId="Tasks" direction="horizontal">
       <Panel minSize={1} maxSize={16} defaultSize={15}>

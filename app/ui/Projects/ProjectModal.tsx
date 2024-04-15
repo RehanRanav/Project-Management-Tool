@@ -1,7 +1,7 @@
 "use client";
 import { emailValidation, generateId } from "@/app/lib/utils";
 import { addProject } from "@/app/redux/projectSlice";
-import { setTask } from "@/app/redux/taskSlice";
+import { setTasktoFirebase } from "@/app/redux/taskSlice";
 import { EmailObj, ProjectData, ProjectPageProps } from "@/definition";
 import { Button, Modal } from "flowbite-react";
 import { useRouter } from "next/navigation";
@@ -65,7 +65,7 @@ const ProjectModal: React.FC<ProjectPageProps> = ({ email }) => {
         team: emailList,
       };
       await dispatch(addProject(project));
-      await dispatch(setTask(project.id));
+      await dispatch(setTasktoFirebase(project.id));
       router.push(`/projects/${project.id}`);
     }
   };

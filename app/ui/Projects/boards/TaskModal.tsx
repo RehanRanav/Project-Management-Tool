@@ -35,20 +35,22 @@ const TaskModal = () => {
     }
   };
 
-  
-  
   const CreateTask = () => {
-    if (summaryRef.current?.value === "") {
-      setSummaryError("Summary is required");
-    } else {
-      const task: TaskObject = {
-        id: generateRandomNumber(),
-        task: summaryRef.current?.value || '' ,
-        issueType: issueType.content,
-        initialStatus: "todo"
-      };
-      dispatch(addTask(task))
-      closeModal();
+    if (summaryRef.current) {
+      let summary = summaryRef.current.value;
+      summary = summary.trim();
+      if (summary.length > 0) {
+        const task: TaskObject = {
+          id: generateRandomNumber(),
+          task: summaryRef.current?.value || "",
+          issueType: issueType.content,
+          initialStatus: "todo",
+        };
+        dispatch(addTask(task));
+        closeModal();
+      } else {
+        setSummaryError("Summary is required");
+      }
     }
   };
 
