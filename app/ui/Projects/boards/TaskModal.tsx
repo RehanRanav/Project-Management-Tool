@@ -1,12 +1,12 @@
 "use client";
 import { Button, CustomFlowbiteTheme, Dropdown, Modal } from "flowbite-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
 import { addTask } from "@/app/redux/taskSlice";
-import { TaskObject, UserData, issueType } from "@/definition";
+import { TaskModalProps, TaskObject, UserData } from "@/definition";
 import { generateRandomNumber } from "@/app/lib/utils";
 import { getProjectData } from "@/app/lib/actions";
 import { useParams } from "next/navigation";
@@ -21,14 +21,13 @@ const customeTheme: CustomFlowbiteTheme["dropdown"] = {
   },
 };
 
-const TaskModal = () => {
-  const issueTypes:issueType[] = [
+const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
+  const issueTypes = [
     { icon: RiTaskFill, color: `text-sky-400`, content: `Task` },
     { icon: RiBookmarkFill, color: `text-green-400`, content: `Story` },
     { icon: PiDiceOneFill, color: `text-red-400`, content: `Bug` },
     { icon: HiBolt, color: `text-violet-400`, content: `Epic` },
   ];
-  const [openModal, setOpenModal] = useState(false);
   const [issueType, setIssueType] = useState(issueTypes[0]);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [assigneeArr, setAssigneeArr] = useState<UserData[]>([]);
@@ -56,11 +55,13 @@ const TaskModal = () => {
   }, []);
 
   useEffect(() => {
-    setAssignee(assigneeArr[0]);
+    if (mode === "TaskCreateMode") {
+      setAssignee(assigneeArr[0]);
+    }
   }, [assigneeArr]);
 
   const CreateTask = () => {
-    if (summaryRef.current && issueType.content && assignee &&assignee.email) {
+    if (summaryRef.current && issueType.content && assignee && assignee.email) {
       let summary = summaryRef.current.value;
       summary = summary.trim();
       if (summary.length > 0) {
@@ -79,6 +80,10 @@ const TaskModal = () => {
     }
   };
 
+  const EditTask = () => {
+    return true;
+  };
+
   const closeModal = () => {
     setOpenModal(false);
     setIssueType(issueTypes[0]);
@@ -89,14 +94,6 @@ const TaskModal = () => {
 
   return (
     <div>
-      <Button
-        color="blue"
-        size="sm"
-        onClick={() => setOpenModal(true)}
-        className="rounded-sm"
-      >
-        Create
-      </Button>
       <Modal
         dismissible
         show={openModal}
@@ -205,7 +202,7 @@ const TaskModal = () => {
             <Button
               color="blue"
               size="sm"
-              onClick={CreateTask}
+              onClick={mode == "TaskCreateMode" ? CreateTask : EditTask}
               className="rounded-sm"
             >
               Create

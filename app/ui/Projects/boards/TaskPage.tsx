@@ -32,7 +32,12 @@ const TaskPage = () => {
   }, [columns, dispatch]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 100,
+        tolerance: 0
+      },
+    }),
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -128,7 +133,7 @@ const TaskPage = () => {
 
   return (
     <div className="flex flex-col gap-2 px-4 py-6">
-      <TaskHead/>
+      <TaskHead />
       <div className="h-full w-full grid grid-cols-4 gap-2">
         <DndContext
           sensors={sensors}
