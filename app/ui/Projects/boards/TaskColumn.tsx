@@ -21,6 +21,7 @@ const TaskColumn: React.FC<Tasklist> = ({ title, id, cards }) => {
                     task={card.task}
                     issueType={card.issueType}
                     assignTo={card.assignTo}
+                    initialStatus = {card.initialStatus}
                   />
             )}
         </div>

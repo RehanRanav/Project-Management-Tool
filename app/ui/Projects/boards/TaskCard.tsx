@@ -8,8 +8,8 @@ import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 
-const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo }) => {
-  const [issueTypeObj, setIssueTypeObj] = useState<ReactNode | undefined>();
+const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo, initialStatus }) => {
+  const [issueTypeicon, setIssueTypeIcon] = useState<ReactNode | undefined>();
   const [openModal, setOpenModal] = useState(false);
 
   const {
@@ -39,7 +39,7 @@ const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo }) => {
         (item) => item.content === issueType
       );
       if (selectedIssueType) {
-        setIssueTypeObj(selectedIssueType.icon);
+        setIssueTypeIcon(selectedIssueType.icon);
       }
     }
   }, []);
@@ -65,7 +65,7 @@ const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo }) => {
             className="text-[8px]"
             arrow={false}
           >
-            <span>{issueTypeObj}</span>
+            <span>{issueTypeicon}</span>
           </Tooltip>
           <Tooltip
             content={`Assign To: ${assignTo.name}`}
@@ -84,6 +84,7 @@ const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo }) => {
         openModal={openModal}
         setOpenModal={setOpenModal}
         mode="TaskUpdateMode"
+        cardData={{ task, issueType, id, assignTo, initialStatus }}
       />
     </>
   );

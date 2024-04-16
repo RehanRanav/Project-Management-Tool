@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { addTask } from "@/app/redux/taskSlice";
 import { TaskModalProps, TaskObject, UserData } from "@/definition";
 import { generateRandomNumber } from "@/app/lib/utils";
-import { getProjectData } from "@/app/lib/actions";
+import { getProjectData, updateTaskCard } from "@/app/lib/actions";
 import { useParams } from "next/navigation";
 
 const customeTheme: CustomFlowbiteTheme["dropdown"] = {
@@ -21,7 +21,12 @@ const customeTheme: CustomFlowbiteTheme["dropdown"] = {
   },
 };
 
-const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
+const TaskModal: FC<TaskModalProps> = ({
+  openModal,
+  setOpenModal,
+  mode,
+  cardData,
+}) => {
   const issueTypes = [
     { icon: RiTaskFill, color: `text-sky-400`, content: `Task` },
     { icon: RiBookmarkFill, color: `text-green-400`, content: `Story` },
@@ -30,6 +35,7 @@ const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
   ];
   const [issueType, setIssueType] = useState(issueTypes[0]);
   const [summaryError, setSummaryError] = useState<string | null>(null);
+  const [summaryValue, setSummaryvalue] = useState("");
   const [assigneeArr, setAssigneeArr] = useState<UserData[]>([]);
   const [assignee, setAssignee] = useState(assigneeArr[0]);
   const summaryRef = useRef<HTMLInputElement | null>(null);
@@ -56,18 +62,31 @@ const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
 
   useEffect(() => {
     if (mode === "TaskCreateMode") {
+      setSummaryvalue("");
       setAssignee(assigneeArr[0]);
+    } else {
+      if (cardData?.assignTo) {
+        setAssignee(cardData?.assignTo);
+      }
+      if (cardData?.issueType) {
+        const issueTypeTemp = issueTypes.find(
+          (item) => item.content === cardData.issueType
+        );
+        if (issueTypeTemp) setIssueType(issueTypeTemp);
+      }
+      if (cardData?.task) {
+        setSummaryvalue(cardData.task);
+      }
     }
-  }, [assigneeArr]);
+  }, [assigneeArr, cardData, mode]);
 
   const CreateTask = () => {
-    if (summaryRef.current && issueType.content && assignee && assignee.email) {
-      let summary = summaryRef.current.value;
-      summary = summary.trim();
-      if (summary.length > 0) {
+    if (issueType.content && assignee && assignee.email) {
+      const summary = summaryValue.trim();
+      if (summary !== "") {
         const task: TaskObject = {
           id: generateRandomNumber(),
-          task: summaryRef.current?.value || "",
+          task: summary || "",
           issueType: issueType.content,
           initialStatus: "todo",
           assignTo: assignee,
@@ -80,8 +99,25 @@ const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
     }
   };
 
-  const EditTask = () => {
-    return true;
+  const EditTask = async () => {
+    if (issueType.content && assignee && assignee.email) {
+      const summary = summaryValue.trim();
+      if (summary !== "" && cardData && cardData.id && cardData.task) {
+        const task: TaskObject = {
+          id: cardData?.id,
+          task: summary,
+          issueType: issueType.content,
+          initialStatus: cardData?.initialStatus,
+          assignTo: assignee,
+        };
+        const res = await updateTaskCard(task, params.id as string);
+        if (res) {
+          closeModal();
+        }
+      } else {
+        setSummaryError("Summary is required");
+      }
+    }
   };
 
   const closeModal = () => {
@@ -89,6 +125,7 @@ const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
     setIssueType(issueTypes[0]);
     setAssignee(assigneeArr[0]);
     setSummaryError(null);
+    setSummaryvalue("");
     if (summaryRef.current) summaryRef.current.value = "";
   };
 
@@ -100,7 +137,9 @@ const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
         onClose={closeModal}
         initialFocus={summaryRef}
       >
-        <Modal.Header>Create issue</Modal.Header>
+        <Modal.Header>
+          {mode === "TaskCreateMode" ? "Create" : "Update"} issue
+        </Modal.Header>
         <Modal.Body>
           <div className="flex flex-col gap-4">
             <span className="relative pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
@@ -142,6 +181,8 @@ const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
                 type="text"
                 required
                 ref={summaryRef}
+                value={summaryValue}
+                onChange={(e) => setSummaryvalue(e.target.value)}
                 className="rounded-sm border-2 border-blue-400 appearance-none"
               />
               {summaryError ? (
@@ -205,7 +246,7 @@ const TaskModal: FC<TaskModalProps> = ({ openModal, setOpenModal, mode }) => {
               onClick={mode == "TaskCreateMode" ? CreateTask : EditTask}
               className="rounded-sm"
             >
-              Create
+              {mode === "TaskCreateMode" ? "Create" : "Update"}
             </Button>
           </div>
         </Modal.Footer>

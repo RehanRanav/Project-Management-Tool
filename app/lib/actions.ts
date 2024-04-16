@@ -10,7 +10,13 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "@/firebase.config";
-import { EmailObj, ProjectData, ProjectTask } from "@/definition";
+import {
+  EmailObj,
+  ProjectData,
+  ProjectTask,
+  TaskObject,
+  Tasklist,
+} from "@/definition";
 import { Session } from "next-auth";
 
 export const addUsertoDatabase = async (user: Session | null) => {
@@ -285,7 +291,6 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
 
 export const addTasktoFirbase = async (taskdata: ProjectTask) => {
   try {
-
     if (taskdata.projectId !== "") {
       const q = query(
         collection(db, "tasks"),
@@ -305,5 +310,52 @@ export const addTasktoFirbase = async (taskdata: ProjectTask) => {
   } catch (error) {
     console.log(error);
     return null;
+  }
+};
+
+export const updateTaskCard = async (task: TaskObject, projectId: string) => {
+  try {
+    const q = query(
+      collection(db, "tasks"),
+      where("taskdata.projectId", "==", projectId)
+    );
+
+    const taskQuerySnapshot = await getDocs(q);
+    if (taskQuerySnapshot.empty) {
+      return false;
+    }
+
+    const taskDoc = taskQuerySnapshot.docs[0];
+    const taskId = task.id;
+
+    const taskIndexArray = taskDoc
+      .data()
+      .taskdata.tasklist.map((item: Tasklist) => {
+        return item.cards.findIndex((t: TaskObject) => t.id === taskId);
+      });
+
+    const taskListIndex = taskIndexArray.findIndex(
+      (item: number) => item !== -1
+    );
+
+    if (taskListIndex !== -1) {
+      const updatedTasklist = taskDoc.data().taskdata.tasklist;
+
+      const updatedCards = [...updatedTasklist[taskListIndex].cards];
+
+      updatedCards[taskIndexArray[taskListIndex]] = task;
+
+      updatedTasklist[taskListIndex].cards = updatedCards;
+
+      await updateDoc(taskDoc.ref, {
+        "taskdata.tasklist": updatedTasklist,
+      });
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
   }
 };

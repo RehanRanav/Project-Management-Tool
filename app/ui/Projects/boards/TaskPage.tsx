@@ -17,7 +17,7 @@ import {
 } from "@dnd-kit/core";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
-import TaskHead from "./TaskHead";
+import TaskHead from "@/app/ui/Projects/boards/TaskHead";
 
 const TaskPage = () => {
   const tasks = useAppSelector(selectTask);
@@ -34,8 +34,8 @@ const TaskPage = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 100,
-        tolerance: 0
+        delay: 250,
+        tolerance: 5
       },
     }),
     useSensor(TouchSensor),
