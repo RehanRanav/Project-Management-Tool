@@ -350,7 +350,9 @@ export const updateTaskCard = async (task: TaskObject, projectId: string) => {
       await updateDoc(taskDoc.ref, {
         "taskdata.tasklist": updatedTasklist,
       });
-      return true;
+      const updatedtaskQuerySnapshot = await getDocs(q);
+      const response = updatedtaskQuerySnapshot.docs[0].data();
+      return response;
     } else {
       return false;
     }

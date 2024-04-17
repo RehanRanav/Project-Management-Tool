@@ -39,11 +39,11 @@ const taskSlice: any = createSlice({
     ) => {
       if (action.payload) {
         state.projectId = action.payload;
-        state.tasklist = initialState.tasklist
+        state.tasklist = initialState.tasklist;
         setTaskToFirebase(state);
       }
     },
-    
+
     setTask: (state, action: PayloadAction<ProjectTask | undefined>) => {
       if (action.payload) {
         return action.payload;
@@ -52,7 +52,7 @@ const taskSlice: any = createSlice({
     },
 
     addTask: (state, action: PayloadAction<TaskObject | undefined>) => {
-      if (action.payload) {        
+      if (action.payload) {
         state.tasklist = state.tasklist.map((task) => {
           if (task.id == action.payload?.initialStatus) {
             return {
@@ -62,19 +62,30 @@ const taskSlice: any = createSlice({
           }
           return task;
         });
-        addTasktoFirbase({ projectId: state.projectId, tasklist: state.tasklist });
+        addTasktoFirbase({
+          projectId: state.projectId,
+          tasklist: state.tasklist,
+        });
       }
     },
     updateTask: (state, action: PayloadAction<Tasklist[] | undefined>) => {
       if (action.payload) {
         state.tasklist = action.payload;
       }
-      addTasktoFirbase({ projectId: state.projectId, tasklist: state.tasklist });
+      addTasktoFirbase({
+        projectId: state.projectId,
+        tasklist: state.tasklist,
+      });
+    },
+    updateCard: (state, action: PayloadAction<Tasklist[] | undefined>) => {
+      if (action.payload) {        
+        state.tasklist = action.payload;
+      }
     },
   },
 });
 
-export const { addTask, setTask , setTasktoFirebase, updateTask } =
+export const { addTask, setTask, setTasktoFirebase, updateTask, updateCard } =
   taskSlice.actions;
 export const selectTask = (state: { task: ProjectTask }) => state.task.tasklist;
 export default taskSlice.reducer;

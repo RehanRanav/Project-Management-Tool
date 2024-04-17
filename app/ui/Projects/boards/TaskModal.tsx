@@ -5,7 +5,7 @@ import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
-import { addTask } from "@/app/redux/taskSlice";
+import { addTask, updateCard } from "@/app/redux/taskSlice";
 import { TaskModalProps, TaskObject, UserData } from "@/definition";
 import { generateRandomNumber } from "@/app/lib/utils";
 import { getProjectData, updateTaskCard } from "@/app/lib/actions";
@@ -112,6 +112,8 @@ const TaskModal: FC<TaskModalProps> = ({
         };
         const res = await updateTaskCard(task, params.id as string);
         if (res) {
+          dispatch(updateCard(res.taskdata.tasklist))
+          
           closeModal();
         }
       } else {

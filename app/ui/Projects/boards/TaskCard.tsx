@@ -8,7 +8,13 @@ import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 
-const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo, initialStatus }) => {
+const TaskCard: React.FC<TaskObject> = ({
+  task,
+  issueType,
+  id,
+  assignTo,
+  initialStatus,
+}) => {
   const [issueTypeicon, setIssueTypeIcon] = useState<ReactNode | undefined>();
   const [openModal, setOpenModal] = useState(false);
 
@@ -42,7 +48,7 @@ const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo, initial
         setIssueTypeIcon(selectedIssueType.icon);
       }
     }
-  }, []);
+  }, [issueType]);
 
   return (
     <>
@@ -54,7 +60,7 @@ const TaskCard: React.FC<TaskObject> = ({ task, issueType, id, assignTo, initial
           transition,
           transform: CSS.Translate.toString(transform),
         }}
-        className="px-4 py-2 shadow-sm shadow-gray-300 bg-white hover:shadow-md hover:bg-gray-50 rounded-sm flex flex-col gap-3 cursor-pointer w-full"
+        className="px-4 py-2 shadow-sm shadow-gray-300 bg-white hover:shadow-md hover:bg-gray-50 rounded-sm flex flex-col gap-3 cursor-pointer w-full active:cursor-grabbing"
         onClick={() => setOpenModal(true)}
       >
         <div className="text-sm font-medium">{task}</div>
