@@ -296,7 +296,6 @@ export const addTasktoFirebase = async (taskdata: ProjectTask) => {
         collection(db, "tasks"),
         where("taskdata.projectId", "==", taskdata.projectId)
       );
-      console.log(taskdata.tickets);
       
       const taskQuerySnapshot = await getDocs(q);
       if (!taskQuerySnapshot.empty) {

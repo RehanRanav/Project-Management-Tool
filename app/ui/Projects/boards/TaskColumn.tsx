@@ -11,7 +11,7 @@ const TaskColumn: React.FC<Tasklist> = ({ title, id, cards }) => {
     <SortableContext items={cards} id={String(id)} strategy={rectSortingStrategy}>
       <div className="h-screen bg-gray-100 w-full" ref={setNodeRef}>
         <div className="w-full text-center text-gray-500">{title}</div>
-        <div className="p-2 flex flex-col gap-3">
+        <div className="p-2 flex flex-col gap-1.5">
           {cards &&
             cards.map(
               (card) =>
