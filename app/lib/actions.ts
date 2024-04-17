@@ -289,18 +289,21 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
   }
 };
 
-export const addTasktoFirbase = async (taskdata: ProjectTask) => {
+export const addTasktoFirebase = async (taskdata: ProjectTask) => {
   try {
     if (taskdata.projectId !== "") {
       const q = query(
         collection(db, "tasks"),
         where("taskdata.projectId", "==", taskdata.projectId)
       );
+      console.log(taskdata.tickets);
+      
       const taskQuerySnapshot = await getDocs(q);
       if (!taskQuerySnapshot.empty) {
         const getTask = taskQuerySnapshot.docs[0];
         await updateDoc(getTask.ref, {
           "taskdata.tasklist": taskdata.tasklist,
+          "taskdata.tickets": taskdata.tickets
         });
       } else {
         return null;
@@ -350,6 +353,7 @@ export const updateTaskCard = async (task: TaskObject, projectId: string) => {
       await updateDoc(taskDoc.ref, {
         "taskdata.tasklist": updatedTasklist,
       });
+
       const updatedtaskQuerySnapshot = await getDocs(q);
       const response = updatedtaskQuerySnapshot.docs[0].data();
       return response;

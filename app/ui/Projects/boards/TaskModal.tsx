@@ -5,11 +5,12 @@ import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
-import { addTask, updateCard } from "@/app/redux/taskSlice";
-import { TaskModalProps, TaskObject, UserData } from "@/definition";
+import { addTask, getTicketNo, updateCard } from "@/app/redux/taskSlice";
+import { TaskModalProps, TaskObject, Tasklist, UserData } from "@/definition";
 import { generateRandomNumber } from "@/app/lib/utils";
 import { getProjectData, updateTaskCard } from "@/app/lib/actions";
 import { useParams } from "next/navigation";
+import { useAppSelector } from "@/app/redux/store";
 
 const customeTheme: CustomFlowbiteTheme["dropdown"] = {
   inlineWrapper:
@@ -41,6 +42,7 @@ const TaskModal: FC<TaskModalProps> = ({
   const summaryRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch();
   const params = useParams();
+  const ticketno = useAppSelector(getTicketNo);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,6 +92,7 @@ const TaskModal: FC<TaskModalProps> = ({
           issueType: issueType.content,
           initialStatus: "todo",
           assignTo: assignee,
+          ticketNo: ticketno + 1 
         };
         dispatch(addTask(task));
         closeModal();
@@ -109,11 +112,11 @@ const TaskModal: FC<TaskModalProps> = ({
           issueType: issueType.content,
           initialStatus: cardData?.initialStatus,
           assignTo: assignee,
+          ticketNo: cardData?.ticketNo,
         };
         const res = await updateTaskCard(task, params.id as string);
         if (res) {
-          dispatch(updateCard(res.taskdata.tasklist))
-          
+          dispatch(updateCard(res.taskdata.tasklist));
           closeModal();
         }
       } else {

@@ -1,10 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ProjectTask, TaskObject, Tasklist } from "@/definition";
-import { addTasktoFirbase, setTaskToFirebase } from "@/app/lib/actions";
+import { addTasktoFirebase, setTaskToFirebase } from "@/app/lib/actions";
 import { UniqueIdentifier } from "@dnd-kit/core";
-
 const initialState: ProjectTask = {
   projectId: "",
+  tickets: 0,
   tasklist: [
     {
       id: "todo",
@@ -40,6 +40,7 @@ const taskSlice: any = createSlice({
       if (action.payload) {
         state.projectId = action.payload;
         state.tasklist = initialState.tasklist;
+        state.tickets = initialState.tickets;
         setTaskToFirebase(state);
       }
     },
@@ -55,16 +56,19 @@ const taskSlice: any = createSlice({
       if (action.payload) {
         state.tasklist = state.tasklist.map((task) => {
           if (task.id == action.payload?.initialStatus) {
+            state.tickets = state.tickets + 1;
             return {
               ...task,
               cards: [...task.cards, action.payload],
             };
           }
           return task;
-        });
-        addTasktoFirbase({
+        });        
+
+        addTasktoFirebase({
           projectId: state.projectId,
           tasklist: state.tasklist,
+          tickets: state.tickets,
         });
       }
     },
@@ -72,13 +76,15 @@ const taskSlice: any = createSlice({
       if (action.payload) {
         state.tasklist = action.payload;
       }
-      addTasktoFirbase({
+      addTasktoFirebase({
         projectId: state.projectId,
         tasklist: state.tasklist,
+        tickets: state.tickets,
       });
     },
+
     updateCard: (state, action: PayloadAction<Tasklist[] | undefined>) => {
-      if (action.payload) {        
+      if (action.payload) {
         state.tasklist = action.payload;
       }
     },
@@ -88,4 +94,5 @@ const taskSlice: any = createSlice({
 export const { addTask, setTask, setTasktoFirebase, updateTask, updateCard } =
   taskSlice.actions;
 export const selectTask = (state: { task: ProjectTask }) => state.task.tasklist;
+export const getTicketNo = (state: { task: ProjectTask }) => state.task.tickets
 export default taskSlice.reducer;

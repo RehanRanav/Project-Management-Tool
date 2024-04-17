@@ -8,6 +8,7 @@ export interface TaskObject {
   issueType: string;
   initialStatus?: UniqueIdentifier;
   assignTo: UserData;
+  ticketNo: number;
 }
 export interface Tasklist {
   id: UniqueIdentifier;
@@ -17,6 +18,7 @@ export interface Tasklist {
 export interface ProjectTask {
   tasklist: Tasklist[];
   projectId: UniqueIdentifier;
+  tickets: number
 }
 export interface ProjectData {
   id: UniqueIdentifier;

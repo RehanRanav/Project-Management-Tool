@@ -16,7 +16,7 @@ const Project = async () => {
   return (
     <>
       <Header />
-        <ProjectIndex email={session?.user?.email || ""} />
+      <ProjectIndex email={session?.user?.email || ""} />
       <RequestedProject email={session?.user?.email || ""} />
     </>
   );

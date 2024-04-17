@@ -3,34 +3,32 @@ import { TaskObject } from "@/definition";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import TaskModal from "@/app/ui/Projects/boards/TaskModal";
-import { Tooltip } from "flowbite-react";
+import { CustomFlowbiteTheme, Tooltip } from "flowbite-react";
 import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 
+const customeTheme: CustomFlowbiteTheme["tooltip"] = {
+  base: "absolute z-10 inline-block rounded-sm px-2 py-1 text-xs font-medium shadow-sm",
+};
 const TaskCard: React.FC<TaskObject> = ({
   task,
   issueType,
   id,
   assignTo,
   initialStatus,
+  ticketNo,
 }) => {
   const [issueTypeicon, setIssueTypeIcon] = useState<ReactNode | undefined>();
   const [openModal, setOpenModal] = useState(false);
 
-  const {
-    attributes,
-    setNodeRef,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: id,
-    data: {
-      type: "TaskCard",
-    },
-  });
+  const { attributes, setNodeRef, listeners, transform, transition } =
+    useSortable({
+      id: id,
+      data: {
+        type: "TaskCard",
+      },
+    });
 
   const issueTypes = [
     { icon: <RiTaskFill className="text-sky-400" />, content: `Task` },
@@ -65,15 +63,20 @@ const TaskCard: React.FC<TaskObject> = ({
       >
         <div className="text-sm font-medium">{task}</div>
         <div className="flex justify-between items-end">
+          <div className="flex items-center gap-1">
+            <Tooltip
+              theme={customeTheme}
+              content={issueType}
+              placement="bottom"
+              className="text-[8px]"
+              arrow={false}
+            >
+              <span>{issueTypeicon}</span>
+            </Tooltip>
+            <span className="text-xs font-medium">{`T-${ticketNo}`}</span>
+          </div>
           <Tooltip
-            content={issueType}
-            placement="right"
-            className="text-[8px]"
-            arrow={false}
-          >
-            <span>{issueTypeicon}</span>
-          </Tooltip>
-          <Tooltip
+            theme={customeTheme}
             content={`Assign To: ${assignTo.name}`}
             placement="left"
             className="text-[10px]"
@@ -90,7 +93,7 @@ const TaskCard: React.FC<TaskObject> = ({
         openModal={openModal}
         setOpenModal={setOpenModal}
         mode="TaskUpdateMode"
-        cardData={{ task, issueType, id, assignTo, initialStatus }}
+        cardData={{ task, issueType, id, assignTo, initialStatus, ticketNo }}
       />
     </>
   );

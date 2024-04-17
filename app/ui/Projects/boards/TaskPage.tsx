@@ -35,7 +35,7 @@ const TaskPage = () => {
     useSensor(PointerSensor, {
       activationConstraint: {
         delay: 250,
-        tolerance: 5
+        tolerance: 0,
       },
     }),
     useSensor(TouchSensor),
