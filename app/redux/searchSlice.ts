@@ -1,24 +1,22 @@
-import { TaskObject, Tasklist } from "@/definition";
+import { SearchState } from "@/definition";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  matchCradIds: [],
+const initialState: SearchState = {
+  input: "",
 };
 
 const searchSlice: any = createSlice({
   name: "search",
   initialState,
   reducers: {
-    filterCards: (state, action: PayloadAction<Tasklist[] | undefined>) => {
-        const tasklist = action.payload;
-        console.log(tasklist?.map((item:Tasklist)=>{
-            return item.cards.map((card:TaskObject)=>{
-                return card.id
-            })
-        }))
+    filterCards: (state, action: PayloadAction<string | undefined>) => {
+      const input = action.payload;
+        state.input = input || "";
     },
   },
 });
 
 export const { filterCards } = searchSlice.actions;
+export const selectSearchInput = (state: { search: SearchState }) =>
+  state.search.input;
 export default searchSlice.reducer;

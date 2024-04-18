@@ -61,7 +61,7 @@ const TaskPage = () => {
         columnId: columnId,
       }));
     });
-
+    
     const columnId = itemWithColumnId.find((i) => i.itemId === id)?.columnId;
     return columns.find((column) => column.id === columnId);
   };

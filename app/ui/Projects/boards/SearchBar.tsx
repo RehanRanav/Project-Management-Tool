@@ -6,13 +6,13 @@ import { IoIosSearch } from "react-icons/io";
 import { useDispatch } from "react-redux";
 
 const SearchBar = () => {
-  const searchRef = useRef(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const tasks = useAppSelector(selectTask);
   const dispatch = useDispatch();
 
   const debounceFunc = (fn: Function, delay: number) => {
     let timer: NodeJS.Timeout;
-    
+
     return function () {
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -22,7 +22,8 @@ const SearchBar = () => {
   };
 
   const filterdata = () => {
-    dispatch(filterCards(tasks))
+    let input = searchRef.current?.value?.trim()?.toLowerCase() || "";
+      dispatch(filterCards(input));
   };
 
   const searchTask = debounceFunc(filterdata, 800);
@@ -36,9 +37,9 @@ const SearchBar = () => {
         className="p-1.5 text-sm text-gray-900 border border-gray-300 rounded-sm bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         onChange={searchTask}
       />
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-          <IoIosSearch size={18} />
-        </div>
+      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+        <IoIosSearch size={18} />
+      </div>
     </div>
   );
 };

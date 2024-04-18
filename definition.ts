@@ -56,3 +56,7 @@ export interface TaskType {
   icon: IconType;
   content: string;
 }
+
+export interface SearchState{
+  input: string | number;
+}
