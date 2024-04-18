@@ -58,5 +58,5 @@ export interface TaskType {
 }
 
 export interface SearchState{
-  input: string | number;
+  input: string ;
 }

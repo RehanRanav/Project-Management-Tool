@@ -16,7 +16,7 @@ const TaskColumn: React.FC<Tasklist> = ({ title, id, cards }) => {
       const temp: TaskObject[] = [];
       
       cards.forEach((card) => {
-        if (card.task.toLowerCase().includes(searchValue as string) || card.ticketNo == Number(searchValue)) {
+        if (card.task.toLowerCase().includes(searchValue) || card.ticketNo.toString().includes(searchValue)) {
           temp.push(card);
         }
       });
