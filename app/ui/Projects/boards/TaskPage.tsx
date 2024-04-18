@@ -11,13 +11,15 @@ import {
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
+  closestCenter,
   closestCorners,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
-import TaskHead from "./TaskHead";
+import TaskHead from "@/app/ui/Projects/boards/TaskHead";
+import SearchBar from "@/app/ui/Projects/boards/SearchBar";
 
 const TaskPage = () => {
   const tasks = useAppSelector(selectTask);
@@ -32,7 +34,13 @@ const TaskPage = () => {
   }, [columns, dispatch]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+        distance: 10
+      },
+    }),
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -53,7 +61,7 @@ const TaskPage = () => {
         columnId: columnId,
       }));
     });
-
+    
     const columnId = itemWithColumnId.find((i) => i.itemId === id)?.columnId;
     return columns.find((column) => column.id === columnId);
   };
@@ -128,11 +136,12 @@ const TaskPage = () => {
 
   return (
     <div className="flex flex-col gap-2 px-4 py-6">
-      <TaskHead/>
+      <TaskHead />
+      <SearchBar/>
       <div className="h-full w-full grid grid-cols-4 gap-2">
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCorners}
+          collisionDetection={closestCenter}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >

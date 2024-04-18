@@ -1,6 +1,6 @@
 import Jiralogo from "@/app/ui/Projects/Jiralogo";
-import TaskModal from "@/app/ui/Projects/boards/TaskModal";
-import UserInfo from "../UserInfo";
+import UserInfo from "@/app/ui/Projects/UserInfo";
+import CreateTaskBtn from "@/app/ui/Projects/boards/CreateTaskBtn";
 
 const Header = () => {
   return (
@@ -9,7 +9,7 @@ const Header = () => {
         <div className="cursor-pointer hover:bg-gray-200 p-1 rounded-sm">
           <Jiralogo />
         </div>
-        <TaskModal />
+        <CreateTaskBtn />
       </div>
       <div className="font-medium flex items-center gap-4">
         <UserInfo />

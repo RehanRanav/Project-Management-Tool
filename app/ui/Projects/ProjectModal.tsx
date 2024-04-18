@@ -1,7 +1,7 @@
 "use client";
 import { emailValidation, generateId } from "@/app/lib/utils";
 import { addProject } from "@/app/redux/projectSlice";
-import { setTask } from "@/app/redux/taskSlice";
+import { setTasktoFirebase } from "@/app/redux/taskSlice";
 import { EmailObj, ProjectData, ProjectPageProps } from "@/definition";
 import { Button, Modal } from "flowbite-react";
 import { useRouter } from "next/navigation";
@@ -41,16 +41,27 @@ const ProjectModal: React.FC<ProjectPageProps> = ({ email }) => {
         .map((email) => ({ email: email.trim(), approval: false })) || [];
 
     let isValid = false;
+    let filteredEmailList: EmailObj[] = [];
     if (emailList?.length > 0) {
-      emailList?.forEach((emailObj) => {
-        isValid = emailValidation(emailObj.email);
+      filteredEmailList = emailList.filter(
+        (emailObj) => emailObj.email !== email
+      );
 
-        if (!isValid) {
-          setError("Invalid email address");
-          setDisableBtn(false);
-          return;
-        }
-      });
+      if (filteredEmailList.length > 0) {
+        filteredEmailList?.forEach((emailObj) => {
+          isValid = emailValidation(emailObj.email);
+
+          if (!isValid) {
+            setError("Invalid email address");
+            setDisableBtn(false);
+            return;
+          }
+        });
+      } else {
+        setError("Add other Team members");
+        setDisableBtn(false);
+        return;
+      }
     }
 
     if (isValid) {
@@ -62,10 +73,10 @@ const ProjectModal: React.FC<ProjectPageProps> = ({ email }) => {
           ? new Date(dateRef.current.value).toLocaleDateString()
           : new Date().toLocaleDateString(),
         createdBy: email,
-        team: emailList,
+        team: filteredEmailList,
       };
       await dispatch(addProject(project));
-      await dispatch(setTask(project.id));
+      await dispatch(setTasktoFirebase(project.id));
       router.push(`/projects/${project.id}`);
     }
   };

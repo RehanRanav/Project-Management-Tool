@@ -10,7 +10,13 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "@/firebase.config";
-import { EmailObj, ProjectData, ProjectTask } from "@/definition";
+import {
+  EmailObj,
+  ProjectData,
+  ProjectTask,
+  TaskObject,
+  Tasklist,
+} from "@/definition";
 import { Session } from "next-auth";
 
 export const addUsertoDatabase = async (user: Session | null) => {
@@ -47,7 +53,7 @@ export const addProjectToFirebase = async (projectdata: ProjectData) => {
   }
 };
 
-export const addTaskToFirebase = async (taskdata: ProjectTask) => {
+export const setTaskToFirebase = async (taskdata: ProjectTask) => {
   try {
     if (taskdata.projectId !== "") {
       await addDoc(collection(db, "tasks"), {
@@ -95,10 +101,19 @@ export const getProjectData = async (id: string) => {
     if (querySnapshot.empty) {
       return null;
     }
+    const projectdoc = querySnapshot.docs[0];
 
-    const doc = querySnapshot.docs[0];
+    const taskQuery = query(
+      collection(db, "tasks"),
+      where("taskdata.projectId", "==", id)
+    );
+    const taskQuerySnapshot = await getDocs(taskQuery);
+    if (taskQuerySnapshot.empty) {
+      return null;
+    }
+    const taskdoc = taskQuerySnapshot.docs[0];
 
-    const createdByEmail = doc.data().projectdata.createdBy;
+    const createdByEmail = projectdoc.data().projectdata.createdBy;
     const userRef = collection(db, "users");
     const userQuery = query(
       userRef,
@@ -111,7 +126,7 @@ export const getProjectData = async (id: string) => {
       userData.push(userQuerySnapshot.docs[0].data().Userdata);
     }
 
-    const teamArr = doc.data().projectdata.team;
+    const teamArr = projectdoc.data().projectdata.team;
     if (teamArr.length > 0) {
       await Promise.all(
         teamArr.map(async (member: EmailObj) => {
@@ -130,8 +145,9 @@ export const getProjectData = async (id: string) => {
     }
 
     const project = {
-      projectdata: doc.data().projectdata,
+      projectdata: projectdoc.data().projectdata,
       userdata: userData,
+      taskdata: taskdoc.data().taskdata,
     };
 
     return project;
@@ -153,6 +169,33 @@ export const getUserData = async (email: string) => {
       userData = userQuerySnapshot.docs[0].data().Userdata;
     }
     return userData;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const updateProjectdata = async (
+  projectId: string,
+  key: string,
+  value: string
+) => {
+  try {
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.id", "==", projectId)
+    );
+
+    const projectQuerySnapshot = await getDocs(q);
+    if (!projectQuerySnapshot.empty) {
+      const getProject = projectQuerySnapshot.docs[0];
+      await updateDoc(getProject.ref, {
+        [`projectdata.${key}`]: value,
+      });
+    } else {
+      return null;
+    }
+    return true;
   } catch (error) {
     console.log(error);
     return null;
@@ -243,5 +286,81 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
   } catch (error) {
     console.log(error);
     return null;
+  }
+};
+
+export const addTasktoFirebase = async (taskdata: ProjectTask) => {
+  try {
+    if (taskdata.projectId !== "") {
+      const q = query(
+        collection(db, "tasks"),
+        where("taskdata.projectId", "==", taskdata.projectId)
+      );
+      
+      const taskQuerySnapshot = await getDocs(q);
+      if (!taskQuerySnapshot.empty) {
+        const getTask = taskQuerySnapshot.docs[0];
+        await updateDoc(getTask.ref, {
+          "taskdata.tasklist": taskdata.tasklist,
+          "taskdata.tickets": taskdata.tickets
+        });
+      } else {
+        return null;
+      }
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const updateTaskCard = async (task: TaskObject, projectId: string) => {
+  try {
+    const q = query(
+      collection(db, "tasks"),
+      where("taskdata.projectId", "==", projectId)
+    );
+
+    const taskQuerySnapshot = await getDocs(q);
+    if (taskQuerySnapshot.empty) {
+      return false;
+    }
+
+    const taskDoc = taskQuerySnapshot.docs[0];
+    const taskId = task.id;
+
+    const taskIndexArray = taskDoc
+      .data()
+      .taskdata.tasklist.map((item: Tasklist) => {
+        return item.cards.findIndex((t: TaskObject) => t.id === taskId);
+      });
+
+    const taskListIndex = taskIndexArray.findIndex(
+      (item: number) => item !== -1
+    );
+
+    if (taskListIndex !== -1) {
+      const updatedTasklist = taskDoc.data().taskdata.tasklist;
+
+      const updatedCards = [...updatedTasklist[taskListIndex].cards];
+
+      updatedCards[taskIndexArray[taskListIndex]] = task;
+
+      updatedTasklist[taskListIndex].cards = updatedCards;
+
+      await updateDoc(taskDoc.ref, {
+        "taskdata.tasklist": updatedTasklist,
+      });
+
+      const updatedtaskQuerySnapshot = await getDocs(q);
+      const response = updatedtaskQuerySnapshot.docs[0].data();
+      return response;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
   }
 };

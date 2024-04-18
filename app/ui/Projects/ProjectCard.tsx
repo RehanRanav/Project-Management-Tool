@@ -49,7 +49,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <div
-      className="p-4 shadow-sm shadow-gray-300 bg-white hover:shadow-md rounded-sm flex flex-col gap-3 cursor-pointer w-72"
+      className="p-4 shadow-sm shadow-gray-300 bg-white hover:shadow-md rounded-sm flex flex-col gap-3 cursor-pointer min-w-72"
       ref={CardRef}
       onClick={ClickFunction}
     >
@@ -79,7 +79,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           {project.title}
         </div>
       </div>
-      <div className="font-normal text-xs text-gray-700 bg-gray-50/95 rounded-sm p-0.5 dark:text-gray-400 h-14 line-clamp-3 leading-relaxed">
+      <div className="font-normal text-xs text-gray-700 rounded-sm p-0.5 dark:text-gray-400 h-14 line-clamp-3 leading-relaxed">
         {project.description}
       </div>
       <div className="flex justify-between">
