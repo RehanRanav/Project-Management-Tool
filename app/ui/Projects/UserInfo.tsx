@@ -1,4 +1,4 @@
-import { Dropdown, DropdownHeader, DropdownItem } from "flowbite-react";
+import { Dropdown, DropdownHeader, DropdownItem, Tooltip } from "flowbite-react";
 import LogOut from "@/app/ui/Login/LogOut";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
@@ -7,7 +7,14 @@ const UserInfo = async () => {
   const session = await getServerSession(authConfig);
   return (
     <>
-      <div>Hello, {session?.user?.name}</div>
+    <Tooltip
+    content={session?.user?.name}
+    arrow={false}
+    animation='duration-500'
+    placement="bottom"
+    >
+      <div className="w-40 text-right cursor-pointer truncate">Hello, {session?.user?.name}</div>
+    </Tooltip>
       <div className="w-fit">
         <Dropdown
           arrowIcon={false}

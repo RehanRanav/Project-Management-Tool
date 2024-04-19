@@ -1,6 +1,5 @@
 "use client";
 import {
-  deleteProjectFromFirbase,
   getAllProjectsData,
   getUserData,
 } from "@/app/lib/actions";
@@ -13,7 +12,7 @@ import {
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { MdDelete } from "react-icons/md";
-import CreateProjectBtn from "@/app/ui/All-Projects/CreateProjectBtn";
+import CreateProjectBtn from "@/app/ui/CreateProjectBtn";
 import ProjectDeleteModal from "@/app/ui/ProjectDeleteModal";
 
 const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
@@ -144,7 +143,7 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
                 {project.projectdata.createdBy == email && (
                   <>
                     <button
-                      className="w-fit p-1 rounded-md hover:text-red-700 hover:bg-gray-100 text-blue-700"
+                      className="w-fit p-1 rounded-md text-red-700 hover:bg-gray-100"
                       onClick={() => openDeleteModal(project.projectdata)}
                     >
                       <MdDelete size={20} />

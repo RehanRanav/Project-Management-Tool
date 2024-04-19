@@ -16,6 +16,9 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import {
+  restrictToWindowEdges
+} from "@dnd-kit/modifiers";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
 import TaskHead from "@/app/ui/Projects/boards/TaskHead";
@@ -36,7 +39,7 @@ const TaskPage = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 250,
+        delay: 100,
         tolerance: 5,
         distance: 10
       },
@@ -135,15 +138,16 @@ const TaskPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 px-4 py-6">
+    <div className="flex flex-col gap-2 px-4 py-6 overflow-hidden">
       <TaskHead />
       <SearchBar/>
-      <div className="h-full w-full grid grid-cols-4 gap-2">
+      <div className="w-full grid grid-cols-4 gap-1.5">
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={closestCorners}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
+          modifiers={[restrictToWindowEdges]}
         >
           {tasks.map((column) => (
             <TaskColumn

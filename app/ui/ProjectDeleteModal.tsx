@@ -12,13 +12,24 @@ const ProjectDeleteModal: React.FC<ProjectDeleteModalProps> = ({
 }) => {
   const deleteProject = async (id: string) => {
     const res = await deleteProjectFromFirbase(id);
-    if(res){
-        setOpenModal(false);
+    if (res) {
+      setOpenModal(false);
     }
   };
 
+  const stopPropagationOnModal = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+  };
   return (
-    <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+    <Modal
+      show={openModal}
+      size="md"
+      onClose={() => setOpenModal(false)}
+      popup
+      onClick={stopPropagationOnModal}
+    >
       <Modal.Header />
       <Modal.Body>
         <div className="text-center">
