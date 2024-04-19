@@ -3,18 +3,20 @@ import React, { useEffect, useState } from "react";
 import { EmailObj, ProjectData, ProjectPageProps } from "@/definition";
 import ProjectCard from "@/app/ui/Projects/ProjectCard";
 import { getAllProjectsData } from "@/app/lib/actions";
-import ProjectModal from "@/app/ui/Projects/ProjectModal";
+import ProjectCreateModal from "@/app/ui/ProjectCreateModal";
 import { useDispatch } from "react-redux";
 import { setProject } from "@/app/redux/projectSlice";
 import { useRouter } from "next/navigation";
-import { MdOutlineArrowRight } from "react-icons/md";
+import { IoArrowForward } from "react-icons/io5";
 import Link from "next/link";
+import { HiPlus } from "react-icons/hi2";
 
 const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
   const [projects, setProjects] = useState<any[]>([]);
+  const [viewAllBtn, setViewAllBtn] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [viewAllBtn, setViewAllBtn] = useState<boolean>(false);
 
   useEffect(() => {
     const getData = getAllProjectsData(setProjects, email);
@@ -46,14 +48,29 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
     <>
       {viewAllBtn && (
         <div className="flex w-full justify-end pr-2 pt-2">
-          <Link href="/all-projects" className="flex items-center hover:underline">
-            <span className="text-sm">view all</span>
-            <MdOutlineArrowRight size={20}/>
+          <Link
+            href="/all-projects"
+            className="flex items-center text-blue-700 text-sm hover:underline"
+          >
+            <span className="text-sm">View all</span>
+            <IoArrowForward size={20} />
           </Link>
         </div>
       )}
-      <div className="p-4 flex gap-8 overflow-hidden">
-        <ProjectModal email={email} />
+      <div className="p-4 grid lg:grid-cols-5 md:grid-cols-4 xs:grid-cols-2 gap-8 overflow-x-hidden">
+        <div className="p-4 border-2 border-dashed shadow-sm shadow-gray-300 bg-white hover:shadow-md hover:opacity-80 rounded-sm flex flex-col gap-3 cursor-pointer w-52 h-48 max-w-52 max-h-48">
+          <button
+            className="h-full w-full flex justify-center items-center"
+            onClick={() => setOpenModal(true)}
+          >
+            <HiPlus size={120} className="text-gray-300" />
+          </button>
+        </div>
+        <ProjectCreateModal
+          email={email}
+          setOpenModal={setOpenModal}
+          openModal={openModal}
+        />
 
         {projects.length > 0 &&
           projects
@@ -65,6 +82,7 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
                     member.email === email && member.approval === true
                 )
             )
+            .slice(0, 4)
             .map((project, index) => (
               <ProjectCard
                 project={project.projectdata}

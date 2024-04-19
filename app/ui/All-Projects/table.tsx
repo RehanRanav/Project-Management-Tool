@@ -4,14 +4,25 @@ import {
   getAllProjectsData,
   getUserData,
 } from "@/app/lib/actions";
-import { EmailObj, ProjectPageProps, UserData } from "@/definition";
+import {
+  EmailObj,
+  ProjectData,
+  ProjectPageProps,
+  UserData,
+} from "@/definition";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MdDelete } from "react-icons/md";
+import CreateProjectBtn from "@/app/ui/All-Projects/CreateProjectBtn";
+import ProjectDeleteModal from "@/app/ui/ProjectDeleteModal";
 
 const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
   const [projects, setProjects] = useState<any[]>([]);
   const [userData, setUserData] = useState<UserData[] | []>([]);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const [filteredProjects, setFilteredProjects] = useState(projects);
+  const [openModal, setOpenModal] = useState(false);
+  const [projectData, setProjectData] = useState<ProjectData | null>(null);
 
   useEffect(() => {
     const getData = getAllProjectsData(setProjects, email);
@@ -30,21 +41,63 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
       }
     };
     fetchUserData();
+    setFilteredProjects(projects);
   }, [projects]);
 
-  const deleteProject = async (id: string) => {
-    const res = await deleteProjectFromFirbase(id);
+  const openDeleteModal = (projectData: ProjectData) => {
+    setOpenModal(true);
+    setProjectData(projectData)
   };
+
+  const debounceFunc = (fn: Function, delay: number) => {
+    let timer: NodeJS.Timeout;
+
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        fn();
+      }, delay);
+    };
+  };
+
+  const filterdata = () => {
+    let input = searchRef.current?.value?.trim()?.toLowerCase() || "";
+    if (input) {
+      const TempProjectData: React.SetStateAction<any[]> = [];
+
+      projects.forEach((project) => {
+        if (project.projectdata.title.toLowerCase().includes(input)) {
+          TempProjectData.push(project);
+        }
+      });
+      setFilteredProjects(TempProjectData);
+    } else {
+      setFilteredProjects(projects);
+    }
+  };
+
+  const searchTask = debounceFunc(filterdata, 800);
 
   return (
     <div className="p-2">
+      <div className="w-full pb-4 flex justify-between">
+        <input
+          ref={searchRef}
+          type="search"
+          id="default-search"
+          placeholder="search..."
+          className="p-1.5 text-sm text-gray-900 border border-gray-300 rounded-sm bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          onChange={searchTask}
+        />
+        <CreateProjectBtn email={email} />
+      </div>
       <div className="grid grid-cols-4 p-2 border-b bg-gray-100">
         <div>Project Name</div>
         <div>DeadLine</div>
         <div>Created By</div>
       </div>
       {projects.length > 0 &&
-        projects
+        filteredProjects
           .filter(
             (project) =>
               project.projectdata.createdBy === email ||
@@ -75,7 +128,7 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
                         )?.image
                       }
                       alt="Profile"
-                      className="h-7 w-7 rounded-md"
+                      className="h-6 w-6 rounded-full"
                     />
                     <span>
                       {
@@ -89,14 +142,20 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
               </div>
               <div>
                 {project.projectdata.createdBy == email && (
-                  <button
-                    className="w-fit p-1 rounded-md hover:bg-gray-100 hover:text-blue-700"
-                    onClick={() =>
-                      deleteProject(project.projectdata.id as string)
-                    }
-                  >
-                    <MdDelete size={20} />
-                  </button>
+                  <>
+                    <button
+                      className="w-fit p-1 rounded-md hover:text-red-700 hover:bg-gray-100 text-blue-700"
+                      onClick={() => openDeleteModal(project.projectdata)}
+                    >
+                      <MdDelete size={20} />
+                    </button>
+
+                    <ProjectDeleteModal
+                      projectData={projectData}
+                      setOpenModal={setOpenModal}
+                      openModal={openModal}
+                    />
+                  </>
                 )}
               </div>
             </div>

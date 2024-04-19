@@ -2,7 +2,7 @@ import React from "react";
 import Jiralogo from "@/app/ui/Projects/Jiralogo";
 import UserInfo from "@/app/ui/Projects/UserInfo";
 
-const Header = async () => {
+const Header = () => {
   return (
     <div className="flex p-4 border-b items-center justify-between">
       <div className="flex items-center justify-between gap-4">
