@@ -16,9 +16,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  restrictToWindowEdges
-} from "@dnd-kit/modifiers";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
 import TaskHead from "@/app/ui/Projects/boards/TaskHead";
@@ -41,7 +39,7 @@ const TaskPage = () => {
       activationConstraint: {
         delay: 100,
         tolerance: 5,
-        distance: 10
+        distance: 10,
       },
     }),
     useSensor(TouchSensor),
@@ -64,7 +62,7 @@ const TaskPage = () => {
         columnId: columnId,
       }));
     });
-    
+
     const columnId = itemWithColumnId.find((i) => i.itemId === id)?.columnId;
     return columns.find((column) => column.id === columnId);
   };
@@ -138,10 +136,10 @@ const TaskPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 px-4 py-6 overflow-hidden">
+    <div className="flex flex-col gap-2 px-4 py-6">
       <TaskHead />
-      <SearchBar/>
-      <div className="w-full grid grid-cols-4 gap-1.5">
+      <SearchBar />
+      <div className="pr-2 lg:w-fit w-full grid grid-cols-[240px_240px_240px_240px] gap-1.5 max-h-96 h-full  overflow-y-scroll lg:overflow-x-hidden absolute top-52 lg:top-44">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}

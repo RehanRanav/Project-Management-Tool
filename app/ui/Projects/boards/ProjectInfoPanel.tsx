@@ -7,7 +7,11 @@ import { IoIosClose } from "react-icons/io";
 import { useParams } from "next/navigation";
 import { getProjectData, updateProjectdata } from "@/app/lib/actions";
 import { useDispatch } from "react-redux";
-import { selectProject, setProject } from "@/app/redux/projectSlice";
+import {
+  selectProject,
+  setProject,
+  updateTitle,
+} from "@/app/redux/projectSlice";
 import { useAppSelector } from "@/app/redux/store";
 import { UserData } from "@/definition";
 import { setTask } from "@/app/redux/taskSlice";
@@ -34,7 +38,7 @@ const ProjectInfoPanel = () => {
           if (res) {
             setUserdata(res.userdata);
             await dispatch(setProject(res.projectdata));
-            await dispatch(setTask(res.taskdata))            
+            await dispatch(setTask(res.taskdata));
           }
         }
       } catch (error) {
@@ -94,6 +98,7 @@ const ProjectInfoPanel = () => {
     if (e.key === "Enter") {
       const res = await updateProjectdata(project.id as string, "title", title);
       if (res) {
+        await dispatch(updateTitle(title));
         handleTitleCancel();
       }
     }

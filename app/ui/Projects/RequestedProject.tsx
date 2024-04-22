@@ -21,16 +21,21 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
   }, []);
 
   const handleAcceptInvite = async (id: string) => {
-    
     const res = await updateProjectApproval(id, email);
     if (res) {
       router.push(`/projects/${id}`);
     }
   };
-  
+
   const handleCancelInvite = async (id: string) => {
     const res = await removeFromTeam(id, email);
     console.log(res);
+  };
+
+  const stopPropagationOnModal = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
   };
 
   return (
@@ -62,6 +67,7 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
                   onClose={() => setOpenModal(false)}
                   dismissible
                   popup
+                  onClick={stopPropagationOnModal}
                 >
                   <Modal.Header />
                   <Modal.Body>
@@ -75,7 +81,9 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
                       <div className="flex justify-center gap-4 z-10">
                         <Button
                           color="blue"
-                          onClick={() =>handleAcceptInvite(project.projectdata.id)}
+                          onClick={() =>
+                            handleAcceptInvite(project.projectdata.id)
+                          }
                         >
                           {"Accept Invitation"}
                         </Button>

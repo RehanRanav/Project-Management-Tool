@@ -32,8 +32,8 @@ const TaskColumn: React.FC<Tasklist> = ({ title, id, cards }) => {
       id={String(id)}
       strategy={rectSortingStrategy}
     >
-      <div className="h-screen bg-gray-100 w-full" ref={setNodeRef}>
-        <div className="w-full text-center text-gray-500 pt-2 px-2">{title}</div>
+      <div className="bg-gray-100 w-full" ref={setNodeRef}>
+        <div className="w-full text-center text-gray-500 p-2 sticky top-0 bg-gray-100 z-10">{title}</div>
         <div className="p-2 flex flex-col gap-1.5">
           {cards &&
             filteredTasks.map((card) => (

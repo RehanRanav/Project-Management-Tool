@@ -141,13 +141,14 @@ const TaskModal: FC<TaskModalProps> = ({
         show={openModal}
         onClose={closeModal}
         initialFocus={summaryRef}
+        size={"xl"}
       >
         <Modal.Header>
           {mode === "TaskCreateMode" ? "Create" : "Update"} issue
         </Modal.Header>
         <Modal.Body>
           <div className="flex flex-col gap-4">
-            <span className="relative pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
+            <span className="relative w-fit pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
               Required fields are marked with an asterisk{" "}
             </span>
             <div className="flex flex-col gap-2">

@@ -13,9 +13,9 @@ const UserInfo = async () => {
     animation='duration-500'
     placement="bottom"
     >
-      <div className="w-40 text-right cursor-pointer truncate">Hello, {session?.user?.name}</div>
+      <div className="w-40 text-right cursor-pointer truncate hidden lg:block">Hello, {session?.user?.name}</div>
     </Tooltip>
-      <div className="w-fit">
+      <div className="w-fit z-20">
         <Dropdown
           arrowIcon={false}
           inline
