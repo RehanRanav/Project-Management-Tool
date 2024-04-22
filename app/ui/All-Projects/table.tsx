@@ -78,22 +78,23 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
   const searchTask = debounceFunc(filterdata, 800);
 
   return (
-    <div className="p-2">
+    <div className="lg:px-10 px-2 py-2">
       <div className="w-full pb-4 flex justify-between">
         <input
           ref={searchRef}
           type="search"
           id="default-search"
-          placeholder="search..."
+          placeholder="Search..."
           className="p-1.5 text-sm text-gray-900 border border-gray-300 rounded-sm bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           onChange={searchTask}
         />
         <CreateProjectBtn email={email} />
       </div>
-      <div className="grid grid-cols-4 p-2 border-b bg-gray-100">
+      <div className="font-semibold grid grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)_minmax(0,_1fr)_60px] p-2 border-b bg-gray-200">
         <div>Project Name</div>
         <div>DeadLine</div>
         <div>Created By</div>
+        <div>Actions</div>
       </div>
       {projects.length > 0 &&
         filteredProjects
@@ -107,12 +108,12 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
           )
           .map((project, index) => (
             <div
-              className="grid grid-cols-4 p-2 hover:bg-gray-50 cursor-pointer"
+              className="grid grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)_minmax(0,_1fr)_20px] p-2 hover:bg-gray-100"
               key={index}
             >
               <Link
                 href={`projects/${project.projectdata.id}`}
-                className="text-blue-700 hover:underline-offset-4 hover:underline"
+                className="text-blue-700 cursor-pointer hover:underline-offset-4 hover:underline"
               >
                 {project.projectdata.title}
               </Link>
@@ -143,7 +144,7 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
                 {project.projectdata.createdBy == email && (
                   <>
                     <button
-                      className="w-fit p-1 rounded-md text-red-700 hover:bg-gray-100"
+                      className="w-fit p-1 rounded-md text-red-700 hover:bg-gray-100 cursor-pointer"
                       onClick={() => openDeleteModal(project.projectdata)}
                     >
                       <MdDelete size={20} />

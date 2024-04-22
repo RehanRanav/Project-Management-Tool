@@ -9,6 +9,7 @@ export interface TaskObject {
   initialStatus?: UniqueIdentifier;
   assignTo: UserData;
   ticketNo: number;
+  columnId?: string;
 }
 export interface Tasklist {
   id: UniqueIdentifier;

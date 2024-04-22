@@ -44,7 +44,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <div
-      className="group px-4 pt-4 shadow-sm shadow-gray-300 bg-white hover:shadow-md rounded-sm flex flex-col gap-3 cursor-pointer w-52 h-48 max-w-52 max-h-48"
+      className="group px-3 py-2 shadow-sm shadow-gray-300 bg-white hover:shadow-md border rounded-sm flex flex-col justify-between cursor-pointer w-52 h-40 max-w-52 max-h-48"
       ref={CardRef}
       onClick={ClickFunction}
     >
@@ -78,7 +78,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       <div className="font-normal text-xs text-gray-700 rounded-sm p-0.5 dark:text-gray-400 h-10 bg-slate-50 leading-relaxed line-clamp-2">
         {project.description}
       </div>
-      <div className="flex justify-between items-end pt-2">
+      <div className="flex justify-between items-end">
         <div
           className={`text-xs flex gap-2 items-center w-fit p-0.5 rounded ${
             deadlineLabel != "overdue" ? "bg-gray-100" : "bg-red-100"

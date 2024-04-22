@@ -11,7 +11,6 @@ import {
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
-  closestCenter,
   closestCorners,
   useSensor,
   useSensors,
@@ -21,6 +20,7 @@ import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
 import TaskHead from "@/app/ui/Projects/boards/TaskHead";
 import SearchBar from "@/app/ui/Projects/boards/SearchBar";
+import { Toaster } from "react-hot-toast";
 
 const TaskPage = () => {
   const tasks = useAppSelector(selectTask);
@@ -157,6 +157,21 @@ const TaskPage = () => {
           ))}
         </DndContext>
       </div>
+      <Toaster
+        position="top-right"
+        reverseOrder={true}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          className: "",
+          duration: 3000,
+          style: {
+            background: "#ffffff",
+            color: "#000",
+          },
+        }}
+      />
     </div>
   );
 };

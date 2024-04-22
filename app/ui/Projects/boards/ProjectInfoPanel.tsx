@@ -64,6 +64,22 @@ const ProjectInfoPanel = () => {
     if (titleInputRef.current) {
       titleInputRef.current.focus();
     }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        titleInputRef.current &&
+        !titleInputRef.current.contains(event.target as Node)
+      ) {
+        handleTitleCancel();
+      }
+    };
+
+    if (!disableTitleInput) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, [disableTitleInput]);
 
   const handleDescriptionHeight = () => {
@@ -96,13 +112,22 @@ const ProjectInfoPanel = () => {
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
-      const res = await updateProjectdata(project.id as string, "title", title);
-      if (res) {
-        await dispatch(updateTitle(title));
-        handleTitleCancel();
+      if (titleInputRef.current?.value.trim() == "") {
+        setTitle(project.title);
+      } else {
+        const res = await updateProjectdata(
+          project.id as string,
+          "title",
+          title
+        );
+        if (res) {
+          await dispatch(updateTitle(title));
+          handleTitleCancel();
+        }
       }
     }
   };
+
   return (
     <div className="flex flex-col gap-2 text-base">
       <div className="flex gap-2 p-4 mt-4 justify-start items-center bg-gray-100">
@@ -142,7 +167,7 @@ const ProjectInfoPanel = () => {
         <div className="flex flex-col gap-1">
           <span className="font-medium">Project Description:</span>
           <div
-            className={`bg-gray-100 h-20 rounded p-1 line-clamp-4 leading-relaxed text-xs relative
+            className={`h-20 rounded p-1 line-clamp-4 leading-relaxed text-xs relative
                 ${expandToggle ? "h-52 line-clamp-none" : "h-20"}`}
             ref={descriptionRef}
           >
@@ -160,11 +185,11 @@ const ProjectInfoPanel = () => {
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <span className="font-medium">Team:</span>
+          <span className="font-medium p-0.5 rounded">Team:</span>
           {userdata.length > 0 &&
             userdata.map((team: UserData, index: number) => (
               <div
-                className="bg-gray-100 rounded p-1 flex items-center gap-2 cursor-pointer"
+                className="rounded p-1 flex items-center gap-2 cursor-pointer"
                 key={index}
               >
                 <img

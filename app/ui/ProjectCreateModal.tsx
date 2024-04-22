@@ -3,7 +3,7 @@ import { emailValidation, generateId } from "@/app/lib/utils";
 import { addProject } from "@/app/redux/projectSlice";
 import { setTasktoFirebase } from "@/app/redux/taskSlice";
 import { EmailObj, ProjectData, ProjectCreateModalProps } from "@/definition";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Spinner } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
@@ -90,6 +90,12 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
     if (projectRef.current) projectRef.current.value = "";
   };
 
+  const handleKeyDownEvent = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter") {
+      CreateProject();
+    }
+  };
+
   return (
     <Modal
       dismissible
@@ -97,6 +103,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
       show={openModal}
       onClose={closeModal}
       size={"xl"}
+      onKeyDown={handleKeyDownEvent}
     >
       <Modal.Header>Create Project</Modal.Header>
       <Modal.Body>
@@ -105,12 +112,6 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
             <span className="relative pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
               Required fields are marked with an asterisk{" "}
             </span>
-            <div className="flex items-center">
-              <HiDotsHorizontal
-                size={30}
-                className="p-1 cursor-pointer hover:bg-gray-200 rounded-sm"
-              />
-            </div>
           </div>
           {error ? (
             <div className="flex items-center gap-2 text-red-600 text-xs">
@@ -179,7 +180,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
             className="rounded-sm"
             disabled={disableBtn}
           >
-            Create
+            {disableBtn ? <Spinner /> : "Create"}
           </Button>
         </div>
       </Modal.Footer>

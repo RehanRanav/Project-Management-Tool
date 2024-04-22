@@ -14,7 +14,7 @@ const CreateTaskBtn = () => {
         onClick={() => setOpenModal(true)}
         className="rounded-sm"
       >
-        Create
+        Create Task
       </Button>
       <TaskModal
         openModal={openModal}

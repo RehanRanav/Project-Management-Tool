@@ -8,7 +8,7 @@ import { ProjectPageProps } from "@/definition";
 const CreateProjectBtn: React.FC<ProjectPageProps> = ({ email }) => {
   const [openModal, setOpenModal] = useState(false);
   return (
-    <div className="flex w-full justify-end ">
+    <div className="flex w-full justify-end font-medium">
       <Button
         color="blue"
         size="sm"
@@ -16,7 +16,7 @@ const CreateProjectBtn: React.FC<ProjectPageProps> = ({ email }) => {
         className="rounded-sm"
       >
         <HiPlus size={24} className="text-gray-300" />
-        Create Project
+        <span className="md:block hidden">Create Project</span>
       </Button>
       <ProjectCreateModal
         email={email}

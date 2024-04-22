@@ -53,6 +53,21 @@ const TaskHead = () => {
     if (titleInputRef.current) {
       titleInputRef.current.focus();
     }
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        titleInputRef.current &&
+        !titleInputRef.current.contains(event.target as Node)
+      ) {
+        handleTitleCancel();
+      }
+    };
+
+    if (!disableTitleInput) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, [disableTitleInput]);
 
   const updateTitleValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,10 +138,9 @@ const TaskHead = () => {
             <Avatar.Group>
               {userdata.length > 0 &&
                 userdata.map((team: UserData, index: number) => (
-                  <Tooltip content={`${team.name}`} arrow={false}>
+                  <Tooltip content={`${team.name}`} arrow={false} key={index}>
                     <Avatar
                       img={team.image}
-                      key={index}
                       size={"sm"}
                       rounded
                       stacked

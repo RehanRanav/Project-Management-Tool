@@ -6,9 +6,9 @@ export default function ProjectLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="">
+    <>
       <Header />
       {children}
-    </div>
+    </>
   );
 }

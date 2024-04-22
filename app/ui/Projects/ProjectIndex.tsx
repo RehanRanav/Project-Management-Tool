@@ -57,13 +57,13 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
           </Link>
         </div>
       )}
-      <div className="p-4 grid lg:grid-cols-5 md:grid-cols-4 xs:grid-cols-2 gap-8 overflow-x-hidden">
-        <div className="p-4 border-2 border-dashed shadow-sm shadow-gray-300 bg-white hover:shadow-md hover:opacity-80 rounded-sm flex flex-col gap-3 cursor-pointer w-52 h-48 max-w-52 max-h-48">
+      <div className="p-4 flex flex-wrap gap-4 overflow-x-hidden">
+        <div className="p-4 border-2 border-dashed shadow-sm shadow-gray-300 bg-white hover:shadow-md hover:opacity-80 rounded-sm flex flex-col gap-3 cursor-pointer w-52 h-40 max-w-52 max-h-48">
           <button
             className="h-full w-full flex justify-center items-center"
             onClick={() => setOpenModal(true)}
           >
-            <HiPlus size={120} className="text-gray-300" />
+            <HiPlus size={100} className="text-gray-300" />
           </button>
         </div>
         <ProjectCreateModal
