@@ -275,14 +275,22 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
       collection(db, "projects"),
       where("projectdata.id", "==", projectId)
     );
+    const taskQuery = query(
+      collection(db, "tasks"),
+      where("taskdata.projectId", "==", projectId)
+    );
     const projectQuerySnapshot = await getDocs(q);
-    if (!projectQuerySnapshot.empty) {
-      const docId = projectQuerySnapshot.docs[0].id;
-      await deleteDoc(doc(db, "projects", docId));
+    const tasksQuerySnapshot = await getDocs(taskQuery);
+    if (!projectQuerySnapshot.empty && !tasksQuerySnapshot.empty) {
+      const projectdocId = projectQuerySnapshot.docs[0].id;
+      const taskdocId = tasksQuerySnapshot.docs[0].id;
+      await deleteDoc(doc(db, "projects", projectdocId));
+      await deleteDoc(doc(db, "tasks", taskdocId));
     } else {
       return null;
     }
     return true;
+    console.log(projectId);
   } catch (error) {
     console.log(error);
     return null;
@@ -296,13 +304,13 @@ export const addTasktoFirebase = async (taskdata: ProjectTask) => {
         collection(db, "tasks"),
         where("taskdata.projectId", "==", taskdata.projectId)
       );
-      
+
       const taskQuerySnapshot = await getDocs(q);
       if (!taskQuerySnapshot.empty) {
         const getTask = taskQuerySnapshot.docs[0];
         await updateDoc(getTask.ref, {
           "taskdata.tasklist": taskdata.tasklist,
-          "taskdata.tickets": taskdata.tickets
+          "taskdata.tickets": taskdata.tickets,
         });
       } else {
         return null;

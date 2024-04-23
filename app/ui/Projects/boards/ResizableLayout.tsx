@@ -2,9 +2,19 @@
 import TaskPage from "@/app/ui/Projects/boards/TaskPage";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ProjectInfoPanel from "@/app/ui/Projects/boards/ProjectInfoPanel";
-import { Suspense } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { resetTask } from "@/app/redux/taskSlice";
 
 const ResizableLayout = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetTask());
+    };
+  }, []);
+
   return (
     <PanelGroup autoSaveId="Tasks" direction="horizontal">
       <Panel

@@ -50,14 +50,14 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
         <div className="flex w-full justify-end pr-2 pt-2">
           <Link
             href="/all-projects"
-            className="flex items-center text-blue-700 text-sm hover:underline"
+            className="flex items-center gap-1 text-blue-700 text-sm hover:underline"
           >
             <span className="text-sm">View all</span>
-            <IoArrowForward size={20} />
+            <IoArrowForward size={16} />
           </Link>
         </div>
       )}
-      <div className="p-4 flex flex-wrap gap-4 overflow-x-hidden">
+      <div className="p-4 flex flex-wrap gap-4 overflow-x-hidden justify-center md:justify-normal">
         <div className="p-4 border-2 border-dashed shadow-sm shadow-gray-300 bg-white hover:shadow-md hover:opacity-80 rounded-sm flex flex-col gap-3 cursor-pointer w-52 h-40 max-w-52 max-h-48">
           <button
             className="h-full w-full flex justify-center items-center"

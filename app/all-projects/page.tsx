@@ -16,7 +16,7 @@ const page = async () => {
   return (
     <>
       <Header />
-      <Link href="/projects" className="p-2 flex gap-1 items-center text-sm text-blue-700 hover:underline"><IoArrowBack size={20}/> Back</Link>
+      <Link href="/projects" className="lg:px-10 px-2 w-fit py-2 flex gap-1 items-center text-sm text-blue-700 hover:underline"><IoArrowBack size={16}/> Back</Link>
       <ProjectTable email={session?.user?.email || ""} />
     </>
   );

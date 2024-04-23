@@ -12,7 +12,7 @@ const Header =async () => {
   return (
     <div className="flex p-4 border-b items-center justify-between">
       <div className="flex items-center justify-between gap-4">
-        <div className="cursor-pointer hover:bg-gray-200 p-1 rounded-sm lg:block hidden">
+        <div className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm lg:block hidden">
           <Jiralogo />
         </div>
         <CreateTaskBtn />

@@ -149,6 +149,7 @@ const TaskModal: FC<TaskModalProps> = ({
     if (summaryRef.current) summaryRef.current.value = "";
   };
   const handleKeyDownEvent = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    event.stopPropagation();
     if (event.key === "Enter") {
       TaskModalSubmitBtn.current?.click();
     }

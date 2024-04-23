@@ -1,8 +1,5 @@
 "use client";
-import {
-  getAllProjectsData,
-  getUserData,
-} from "@/app/lib/actions";
+import { getAllProjectsData, getUserData } from "@/app/lib/actions";
 import {
   EmailObj,
   ProjectData,
@@ -14,6 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import CreateProjectBtn from "@/app/ui/CreateProjectBtn";
 import ProjectDeleteModal from "@/app/ui/ProjectDeleteModal";
+import { Table } from "flowbite-react";
 
 const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
   const [projects, setProjects] = useState<any[]>([]);
@@ -45,7 +43,7 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
 
   const openDeleteModal = (projectData: ProjectData) => {
     setOpenModal(true);
-    setProjectData(projectData)
+    setProjectData(projectData);
   };
 
   const debounceFunc = (fn: Function, delay: number) => {
@@ -85,81 +83,84 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
           type="search"
           id="default-search"
           placeholder="Search..."
-          className="p-1.5 text-sm text-gray-900 border border-gray-300 rounded-sm bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="p-1 w-56 text-xs text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-cyan-600 focus:border-cyan-600 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           onChange={searchTask}
         />
         <CreateProjectBtn email={email} />
       </div>
-      <div className="font-semibold grid grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)_minmax(0,_1fr)_60px] p-2 border-b bg-gray-200">
-        <div>Project Name</div>
-        <div>DeadLine</div>
-        <div>Created By</div>
-        <div>Actions</div>
-      </div>
-      {projects.length > 0 &&
-        filteredProjects
-          .filter(
-            (project) =>
-              project.projectdata.createdBy === email ||
-              project.projectdata.team.some(
-                (member: EmailObj) =>
-                  member.email === email && member.approval === true
-              )
-          )
-          .map((project, index) => (
-            <div
-              className="grid grid-cols-[minmax(0,_1fr)_minmax(0,_1fr)_minmax(0,_1fr)_20px] p-2 hover:bg-gray-100"
-              key={index}
-            >
-              <Link
-                href={`projects/${project.projectdata.id}`}
-                className="text-blue-700 cursor-pointer hover:underline-offset-4 hover:underline"
-              >
-                {project.projectdata.title}
-              </Link>
-              <div>{project.projectdata.date}</div>
-              <div>
-                {
-                  <div className="flex gap-2 items-center">
-                    <img
-                      src={
-                        userData.find(
-                          (user) => user.email === project.projectdata.createdBy
-                        )?.image
-                      }
-                      alt="Profile"
-                      className="h-6 w-6 rounded-full"
-                    />
-                    <span>
-                      {
-                        userData.find(
-                          (user) => user.email === project.projectdata.createdBy
-                        )?.name
-                      }
-                    </span>
-                  </div>
-                }
-              </div>
-              <div>
-                {project.projectdata.createdBy == email && (
-                  <>
-                    <button
-                      className="w-fit p-1 rounded-md text-red-700 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => openDeleteModal(project.projectdata)}
-                    >
-                      <MdDelete size={20} />
-                    </button>
+      <div className="overflow-x-auto">
+        <Table striped hoverable>
+          <Table.Head>
+            <Table.HeadCell>Project Name</Table.HeadCell>
+            <Table.HeadCell>DeadLine</Table.HeadCell>
+            <Table.HeadCell>Created By</Table.HeadCell>
+            <Table.HeadCell>Action</Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {projects.length > 0 &&
+              filteredProjects
+                .filter(
+                  (project) =>
+                    project.projectdata.createdBy === email ||
+                    project.projectdata.team.some(
+                      (member: EmailObj) =>
+                        member.email === email && member.approval === true
+                    )
+                )
+                .map((project, index) => (
+                  <Table.Row className="group bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <Table.Cell className="whitespace-nowrap font-medium cursor-pointer text-cyan-600 hover:underline dark:text-cyan-500">
+                      <Link href={`projects/${project.projectdata.id}`}>{project.projectdata.title}</Link>
+                    </Table.Cell>
 
-                    <ProjectDeleteModal
-                      projectData={projectData}
-                      setOpenModal={setOpenModal}
-                      openModal={openModal}
-                    />
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
+                    <Table.Cell>{project.projectdata.date}</Table.Cell>
+                    <Table.Cell>
+                      {
+                        <div className="flex gap-2 items-center">
+                          <img
+                            src={
+                              userData.find(
+                                (user) =>
+                                  user.email === project.projectdata.createdBy
+                              )?.image
+                            }
+                            alt="Profile"
+                            className="h-6 w-6 rounded-full"
+                          />
+                          <span>
+                            {
+                              userData.find(
+                                (user) =>
+                                  user.email === project.projectdata.createdBy
+                              )?.name
+                            }
+                          </span>
+                        </div>
+                      }
+                    </Table.Cell>
+                    <Table.Cell>
+                      {project.projectdata.createdBy == email && (
+                        <>
+                          <button
+                            className="w-fit p-1 rounded-md text-red-700 hover:bg-gray-100 cursor-pointer opacity-0 group-hover:opacity-100"
+                            onClick={() => openDeleteModal(project.projectdata)}
+                          >
+                            <MdDelete size={20} />
+                          </button>
+
+                          <ProjectDeleteModal
+                            projectData={projectData}
+                            setOpenModal={setOpenModal}
+                            openModal={openModal}
+                          />
+                        </>
+                      )}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+          </Table.Body>
+        </Table>
+      </div>
     </div>
   );
 };

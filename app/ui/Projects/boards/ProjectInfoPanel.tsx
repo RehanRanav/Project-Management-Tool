@@ -15,6 +15,7 @@ import {
 import { useAppSelector } from "@/app/redux/store";
 import { UserData } from "@/definition";
 import { setTask } from "@/app/redux/taskSlice";
+import { Tooltip } from "flowbite-react";
 
 const ProjectInfoPanel = () => {
   const project = useAppSelector(selectProject);
@@ -148,12 +149,18 @@ const ProjectInfoPanel = () => {
           onKeyDown={(e) => handleTitleInputKeyDown(e)}
         />
         {disableTitleInput ? (
+          <Tooltip
+          content="Edit Project Name"
+          className="p-0.5 text-[10px] rounded-sm"
+          arrow={false}>
+
           <button
             className="hover:bg-gray-200 border border-transparent hover:border-gray-500 p-1 rounded-sm"
             onClick={handleTitleEdit}
-          >
+            >
             <BiEdit />
           </button>
+            </Tooltip>
         ) : (
           <button
             className="hover:bg-gray-200 border border-transparent hover:border-gray-500 p-1 rounded-sm"

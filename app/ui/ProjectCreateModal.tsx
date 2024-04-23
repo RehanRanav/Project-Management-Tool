@@ -5,8 +5,7 @@ import { setTasktoFirebase } from "@/app/redux/taskSlice";
 import { EmailObj, ProjectData, ProjectCreateModalProps } from "@/definition";
 import { Button, Modal, Spinner } from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import { HiDotsHorizontal } from "react-icons/hi";
+import { useEffect, useRef, useState } from "react";
 import { PiWarningDiamondFill } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 
@@ -20,18 +19,32 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const dateRef = useRef<HTMLInputElement | null>(null);
   const emailsRef = useRef<HTMLInputElement | null>(null);
+  const createProjectBtnRef = useRef<HTMLButtonElement | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [fieldError, setFieldError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
 
   const CreateProject = async () => {
     if (
-      projectRef.current?.value === "" ||
-      descriptionRef.current?.value === "" ||
-      dateRef.current?.value === "" ||
-      emailsRef.current?.value === ""
+      projectRef.current?.value.trim() === "" ||
+      descriptionRef.current?.value.trim() === "" ||
+      dateRef.current?.value.trim() === "" ||
+      emailsRef.current?.value.trim() === ""
     ) {
-      setError("Please fill all fields");
+      if (projectRef.current?.value.trim() === "") {
+        setFieldError("projectNameError");
+        setError("Please fill Project Name fields");
+      } else if (descriptionRef.current?.value.trim() === "") {
+        setFieldError("projectDescriptionError");
+        setError("Please fill Project Description fields");
+      } else if (dateRef.current?.value.trim() === "") {
+        setFieldError("projectDateError");
+        setError("Please fill Project Deadline fields");
+      } else if (emailsRef.current?.value.trim() === "") {
+        setFieldError("projectEmailsError");
+        setError("Please fill Project Email fields");
+      }
       setDisableBtn(false);
       return;
     }
@@ -54,12 +67,14 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
           isValid = emailValidation(emailObj.email);
 
           if (!isValid) {
+            setFieldError("projectEmailsError");
             setError("Invalid email address");
             setDisableBtn(false);
             return;
           }
         });
       } else {
+        setFieldError("projectEmailsError");
         setError("Add other Team members");
         setDisableBtn(false);
         return;
@@ -91,8 +106,10 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
   };
 
   const handleKeyDownEvent = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter") {
-      CreateProject();
+    event.stopPropagation();
+    if (event.key === "Enter" && !disableBtn) {
+      console.log("hey");
+      createProjectBtnRef.current?.click();
     }
   };
 
@@ -127,7 +144,11 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
               type="text"
               required
               ref={projectRef}
-              className="rounded-sm border-2 border-blue-400 appearance-none"
+              className={`rounded-sm border-2 outline-none appearance-none ${
+                fieldError === `projectNameError`
+                  ? "border-red-400"
+                  : "border-blue-400"
+              }`}
             />
           </div>
 
@@ -137,7 +158,11 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
             </label>
             <textarea
               ref={descriptionRef}
-              className="rounded-sm border-2 border-blue-400 appearance-none"
+              className={`rounded-sm border-2 outline-none appearance-none ${
+                fieldError === `projectDescriptionError`
+                  ? "border-red-400"
+                  : "border-blue-400"
+              }`}
             ></textarea>
           </div>
 
@@ -149,7 +174,11 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
               ref={dateRef}
               type="date"
               required
-              className="rounded-sm border-2 border-blue-400 w-fit"
+              className={`rounded-sm border-2 outline-none w-fit ${
+                fieldError === `projectDateError`
+                  ? "border-red-400"
+                  : "border-blue-400"
+              }`}
             />
           </div>
 
@@ -157,10 +186,18 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
             <label className="relative w-fit pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
               Add Team
             </label>
+            <span className="w-fit pr-4 text-[10px] text-gray-600">
+              <b>Note: </b>
+              {" (Please separate multiple email addresses with commas (,))"}
+            </span>
             <input
               ref={emailsRef}
               type="email"
-              className="rounded-sm border-2 border-blue-400 appearance-none"
+              className={`rounded-sm border-2 outline-none appearance-none ${
+                fieldError === `projectEmailsError`
+                  ? "border-red-400"
+                  : "border-blue-400"
+              }`}
             />
           </div>
         </div>
@@ -174,6 +211,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
             Cancel
           </button>
           <Button
+            ref={createProjectBtnRef}
             color="blue"
             size="sm"
             onClick={CreateProject}

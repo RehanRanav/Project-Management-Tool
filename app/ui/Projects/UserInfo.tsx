@@ -13,7 +13,7 @@ const UserInfo = async () => {
     animation='duration-500'
     placement="bottom"
     >
-      <div className="w-40 text-right truncate hidden lg:block">Hello, {session?.user?.name}</div>
+      <div className="w-40 text-sm font-semibold text-right truncate hidden lg:block">Hello, {session?.user?.name}</div>
     </Tooltip>
       <div className="w-fit z-20">
         <Dropdown
@@ -23,8 +23,8 @@ const UserInfo = async () => {
             <img
               src={`${session?.user?.image}`}
               alt="Profile Pic"
-              width={40}
-              height={40}
+              width={36}
+              height={36}
               className="rounded-full"
             />
           }

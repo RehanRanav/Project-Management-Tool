@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineWatchLater, MdDelete } from "react-icons/md";
 import { differenceInDays } from "@/app/lib/utils";
-import { deleteProjectFromFirbase, getUserData } from "@/app/lib/actions";
+import { getUserData } from "@/app/lib/actions";
 import { Tooltip } from "flowbite-react";
 import ProjectDeleteModal from "@/app/ui/ProjectDeleteModal";
 
@@ -33,7 +33,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       }
     };
     fetchUserData();
-  }, []);
+  }, [project]);
 
   const handleDeleteBtnClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -71,7 +71,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             openModal={openModal}
           />
         </div>
-        <div className="text-base font-bold tracking-tight text-gray-900 dark:text-white">
+        <div className="text-base font-bold tracking-tight text-blue-600">
           {project.title}
         </div>
       </div>
@@ -81,7 +81,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       <div className="flex justify-between items-end">
         <div
           className={`text-xs flex gap-2 items-center w-fit p-0.5 rounded ${
-            deadlineLabel != "overdue" ? "bg-gray-100" : "bg-red-100"
+            deadlineLabel != "overdue" ? "" : "text-red-700"
           }`}
         >
           <span>

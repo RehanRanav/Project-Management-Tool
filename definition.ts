@@ -57,6 +57,12 @@ export interface ProjectDeleteModalProps {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
 }
+export interface ProjectInviteModalProps{
+  email: string;
+  projectData: ProjectData | null;
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+}
 export interface UserData {
   name?: string;
   email?: string;
