@@ -1,5 +1,10 @@
 "use client";
-import { emailValidation, generateId } from "@/app/lib/utils";
+import {
+  dateValidation,
+  emailValidation,
+  generateId,
+  tomorrow,
+} from "@/app/lib/utils";
 import { addProject } from "@/app/redux/projectSlice";
 import { setTasktoFirebase } from "@/app/redux/taskSlice";
 import { EmailObj, ProjectData, ProjectCreateModalProps } from "@/definition";
@@ -8,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PiWarningDiamondFill } from "react-icons/pi";
 import { useDispatch } from "react-redux";
+import { searchForProjectName } from "@/app/lib/actions";
 
 const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
   email,
@@ -38,7 +44,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
       } else if (descriptionRef.current?.value.trim() === "") {
         setFieldError("projectDescriptionError");
         setError("Please fill Project Description fields");
-      } else if (dateRef.current?.value.trim() === "") {
+      } else if (dateRef.current?.value === "") {
         setFieldError("projectDateError");
         setError("Please fill Project Deadline fields");
       } else if (emailsRef.current?.value.trim() === "") {
@@ -47,6 +53,22 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
       }
       setDisableBtn(false);
       return;
+    }
+    if (dateRef.current?.value) {
+      const res = dateValidation(dateRef.current?.value);
+      if (!res) {
+        setFieldError("projectDateError");
+        setError("Please fill Valid Project Deadline");
+        return;
+      }
+    }
+    if (projectRef.current?.value.trim()) {
+      const res = await searchForProjectName(projectRef.current.value, email);
+      if (res) {
+        setFieldError("projectNameError");
+        setError("Project Name already exists");
+        return;
+      }
     }
     setDisableBtn(true);
     const emailInput = emailsRef.current;
@@ -179,6 +201,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                   ? "border-red-400"
                   : "border-blue-400"
               }`}
+              min={tomorrow.toISOString().split("T")[0]}
             />
           </div>
 

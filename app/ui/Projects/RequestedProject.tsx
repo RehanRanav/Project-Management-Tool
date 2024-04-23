@@ -7,7 +7,7 @@ import {
 } from "@/app/lib/actions";
 import { EmailObj, ProjectData, ProjectPageProps } from "@/definition";
 import ProjectCard from "@/app/ui/Projects/ProjectCard";
-import ProjectInviteModal from "./ProjectInviteModal";
+import ProjectInviteModal from "@/app/ui/Projects/ProjectInviteModal";
 
 const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
   const [projects, setProjects] = useState<any[]>([]);

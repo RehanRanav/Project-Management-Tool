@@ -157,6 +157,32 @@ export const getProjectData = async (id: string) => {
   }
 };
 
+export const searchForProjectName = async (
+  Projectname: string,
+  email: string
+) => {
+  try {
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.createdBy", "==", email)
+    );
+
+    let matchFlag = false;
+    const projectQuerySnapshot = await getDocs(q);
+    if (!projectQuerySnapshot.empty) {
+      projectQuerySnapshot.docs.map((doc) => {
+        if (doc.data().projectdata.title === Projectname) {
+          matchFlag = true;
+        }
+      });
+    }
+    return matchFlag;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 export const getUserData = async (email: string) => {
   try {
     const q = query(

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/app/redux/provider";
-
-const inter = Inter({ subsets: ["latin"] });
+import { inter, lusitana, roboto } from "@/app/ui/fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -20,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${roboto.className} antialiased`}>
         <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>
