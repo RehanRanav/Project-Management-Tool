@@ -1,3 +1,26 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-duplicate-imports": "warn",
+    "eqeqeq": "off",
+    "no-undef": "error",
+    "no-unused-vars": "error",
+    "no-console": "warn",
+    "no-var": "warn",
+    "no-extra-semi": "error",
+    "quotes": "off",
+    "indent": ["error", 2],
+    "no-undef-init": "warn",
+    "no-empty": "error",
+    "no-constant-condition": "error",
+    "prefer-template": "error",
+    "no-warning-comments": "warn",
+    "no-inline-comments": "warn",
+    "no-multi-spaces": "warn",
+    "no-trailing-spaces": "warn",
+    "no-multiple-empty-lines": ["error", { "max": 1 }]
+  },
+  "globals": {
+    "NodeJS": "readonly"
+  }
 }

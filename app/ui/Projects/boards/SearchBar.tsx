@@ -19,7 +19,7 @@ const SearchBar = () => {
 
   const filterdata = () => {
     let input = searchRef.current?.value?.trim()?.toLowerCase() || "";
-      dispatch(filterCards(input));
+    dispatch(filterCards(input));
   };
 
   const searchTask = debounceFunc(filterdata, 800);

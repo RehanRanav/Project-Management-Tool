@@ -1,9 +1,9 @@
 'use client'
 import clsx from "clsx";
-import { MouseEventHandler } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
 }
 
 export function Button({ children, className, onClick, ...rest }: ButtonProps) {

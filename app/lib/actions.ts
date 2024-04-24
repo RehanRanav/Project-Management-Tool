@@ -18,6 +18,7 @@ import {
   Tasklist,
 } from "@/definition";
 import { Session } from "next-auth";
+import { Dispatch, SetStateAction } from "react";
 
 export const addUsertoDatabase = async (user: Session | null) => {
   try {
@@ -37,7 +38,7 @@ export const addUsertoDatabase = async (user: Session | null) => {
       });
     }
   } catch (error) {
-    console.log("error while Add user", error);
+    return false;
   }
 };
 
@@ -49,7 +50,7 @@ export const addProjectToFirebase = async (projectdata: ProjectData) => {
       });
     }
   } catch (error) {
-    console.error("Error adding project to Firebase:", error);
+    return false;
   }
 };
 
@@ -61,17 +62,17 @@ export const setTaskToFirebase = async (taskdata: ProjectTask) => {
       });
     }
   } catch (error) {
-    console.error("Error adding tasks to Firebase:", error);
+    return false;
   }
 };
 
 export const getAllProjectsData = (
-  setProjects: React.Dispatch<React.SetStateAction<any[]>>,
+  setProjects: Dispatch<SetStateAction<any[]>>,
   email: string
-) => {
+): Boolean | undefined => {
   try {
     const q = query(collection(db, "projects"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    onSnapshot(q, (querySnapshot) => {
       const items: any[] = [];
 
       querySnapshot.forEach((doc) => {
@@ -84,9 +85,10 @@ export const getAllProjectsData = (
           items.push({ ...doc.data() });
       });
       setProjects(items);
+      return true;
     });
   } catch (error) {
-    console.error("Error while getting project All data: ", error);
+    return;
   }
 };
 
@@ -152,7 +154,6 @@ export const getProjectData = async (id: string) => {
 
     return project;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -178,7 +179,6 @@ export const searchForProjectName = async (
     }
     return matchFlag;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -196,7 +196,6 @@ export const getUserData = async (email: string) => {
     }
     return userData;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -223,7 +222,6 @@ export const updateProjectdata = async (
     }
     return true;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -258,7 +256,6 @@ export const updateProjectApproval = async (
       return true;
     }
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -290,7 +287,6 @@ export const removeFromTeam = async (projectId: string, email: string) => {
       return true;
     }
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -316,9 +312,7 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
       return null;
     }
     return true;
-    console.log(projectId);
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -344,7 +338,6 @@ export const addTasktoFirebase = async (taskdata: ProjectTask) => {
       return true;
     }
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -394,7 +387,6 @@ export const updateTaskCard = async (task: TaskObject, projectId: string) => {
       return false;
     }
   } catch (error) {
-    console.log(error);
     return false;
   }
 };

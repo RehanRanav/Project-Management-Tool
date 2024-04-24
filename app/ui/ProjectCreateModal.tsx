@@ -10,12 +10,12 @@ import { setTasktoFirebase } from "@/app/redux/taskSlice";
 import { EmailObj, ProjectData, ProjectCreateModalProps } from "@/definition";
 import { Button, Modal, Spinner } from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { FC, useRef, useState, KeyboardEvent } from "react";
 import { PiWarningDiamondFill } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { searchForProjectName } from "@/app/lib/actions";
 
-const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
+const ProjectCreateModal: FC<ProjectCreateModalProps> = ({
   email,
   setOpenModal,
   openModal,
@@ -127,10 +127,9 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
     if (projectRef.current) projectRef.current.value = "";
   };
 
-  const handleKeyDownEvent = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDownEvent = (event: KeyboardEvent<HTMLDivElement>) => {
     event.stopPropagation();
     if (event.key === "Enter" && !disableBtn) {
-      console.log("hey");
       createProjectBtnRef.current?.click();
     }
   };

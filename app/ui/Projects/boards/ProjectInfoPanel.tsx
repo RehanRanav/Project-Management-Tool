@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosClose } from "react-icons/io";
 import { BiEdit } from "react-icons/bi";
-import { IoIosClose } from "react-icons/io";
 import { useParams } from "next/navigation";
 import { getProjectData, updateProjectdata } from "@/app/lib/actions";
 import { useDispatch } from "react-redux";
@@ -16,7 +15,7 @@ import { useAppSelector } from "@/app/redux/store";
 import { UserData } from "@/definition";
 import { setTask } from "@/app/redux/taskSlice";
 import { Tooltip } from "flowbite-react";
-import { ProjectInfoPanelSkeleton } from "../../skeleton";
+import { ProjectInfoPanelSkeleton } from "@/app/ui/skeleton";
 import toast from "react-hot-toast";
 
 const ProjectInfoPanel = () => {
@@ -46,7 +45,7 @@ const ProjectInfoPanel = () => {
           }
         }
       } catch (error) {
-        console.error("Error fetching project data:", error);
+        return;
       }
     };
 

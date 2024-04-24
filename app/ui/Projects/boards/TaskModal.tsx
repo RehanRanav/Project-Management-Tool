@@ -12,7 +12,7 @@ import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
 import { addTask, getTicketNo, updateCard } from "@/app/redux/taskSlice";
-import { TaskModalProps, TaskObject, Tasklist, UserData } from "@/definition";
+import { TaskModalProps, TaskObject, UserData } from "@/definition";
 import { generateRandomNumber } from "@/app/lib/utils";
 import { getProjectData, updateTaskCard } from "@/app/lib/actions";
 import { useParams } from "next/navigation";
@@ -69,7 +69,7 @@ const TaskModal: FC<TaskModalProps> = ({
           }
         }
       } catch (error) {
-        console.error("Error fetching User data:", error);
+        return;
       }
     };
 

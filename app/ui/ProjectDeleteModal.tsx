@@ -1,6 +1,6 @@
 "use client";
 import { Button, Modal } from "flowbite-react";
-import React, { useState } from "react";
+import React from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { deleteProjectFromFirbase } from "@/app/lib/actions";
 import { ProjectDeleteModalProps } from "@/definition";

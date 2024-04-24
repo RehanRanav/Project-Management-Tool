@@ -17,14 +17,13 @@ import Image from "next/image";
 const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
   const [projects, setProjects] = useState<any[]>([]);
   const [userData, setUserData] = useState<UserData[] | []>([]);
-  const searchRef = useRef<HTMLInputElement | null>(null);
   const [filteredProjects, setFilteredProjects] = useState(projects);
   const [openModal, setOpenModal] = useState(false);
   const [projectData, setProjectData] = useState<ProjectData | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    const getData = getAllProjectsData(setProjects, email);
-    return () => getData;
+    getAllProjectsData(setProjects, email);
   }, [email]);
 
   useEffect(() => {

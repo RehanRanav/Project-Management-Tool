@@ -3,8 +3,9 @@ import { removeFromTeam, updateProjectApproval } from "@/app/lib/actions";
 import { ProjectInviteModalProps } from "@/definition";
 import { Button, Modal } from "flowbite-react";
 import { useRouter } from "next/navigation";
+import { FC, MouseEvent } from "react";
 
-const ProjectInviteModal: React.FC<ProjectInviteModalProps> = ({
+const ProjectInviteModal: FC<ProjectInviteModalProps> = ({
   email,
   projectData,
   setOpenModal,
@@ -13,8 +14,6 @@ const ProjectInviteModal: React.FC<ProjectInviteModalProps> = ({
   const router = useRouter();
 
   const handleAcceptInvite = async (id: string) => {
-    console.log(id);
-
     const res = await updateProjectApproval(id, email);
     if (res) {
       router.push(`/projects/${id}`);
@@ -22,13 +21,10 @@ const ProjectInviteModal: React.FC<ProjectInviteModalProps> = ({
   };
 
   const handleCancelInvite = async (id: string) => {
-    const res = await removeFromTeam(id, email);
-    console.log(res);
+    await removeFromTeam(id, email);
   };
 
-  const stopPropagationOnModal = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
+  const stopPropagationOnModal = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
 

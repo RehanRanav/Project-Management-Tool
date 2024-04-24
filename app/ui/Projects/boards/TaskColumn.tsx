@@ -1,5 +1,5 @@
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TaskCard from "@/app/ui/Projects/boards/TaskCard";
 import { useDroppable } from "@dnd-kit/core";
 import { TaskObject, Tasklist } from "@/definition";

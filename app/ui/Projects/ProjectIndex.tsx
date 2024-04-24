@@ -10,18 +10,30 @@ import { useRouter } from "next/navigation";
 import { IoArrowForward } from "react-icons/io5";
 import Link from "next/link";
 import { HiPlus } from "react-icons/hi2";
+import { MultipleProjectCards } from "@/app/ui/skeleton";
 
 const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
   const [projects, setProjects] = useState<any[]>([]);
   const [viewAllBtn, setViewAllBtn] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {
     const getData = getAllProjectsData(setProjects, email);
-    return () => getData;
+    if (getData) {
+      setIsLoading(true);
+    }
   }, [email]);
+
+  useEffect(() => {
+    if (projects.length > 0) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }, [projects]);
 
   useEffect(() => {
     const tempProject = projects.filter(
@@ -72,7 +84,10 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
           openModal={openModal}
         />
 
-        {projects.length > 0 &&
+        {isLoading ? (
+          <MultipleProjectCards />
+        ) : (
+          projects.length > 0 &&
           projects
             .filter(
               (project) =>
@@ -90,7 +105,8 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
                 key={index}
                 ClickFunction={() => handleClick(project.projectdata)}
               />
-            ))}
+            ))
+        )}
       </div>
     </>
   );

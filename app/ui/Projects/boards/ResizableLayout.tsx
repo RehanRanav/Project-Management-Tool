@@ -2,10 +2,9 @@
 import TaskPage from "@/app/ui/Projects/boards/TaskPage";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ProjectInfoPanel from "@/app/ui/Projects/boards/ProjectInfoPanel";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { resetTask } from "@/app/redux/taskSlice";
-import { Spinner } from "flowbite-react";
 
 const ResizableLayout = () => {
   const dispatch = useDispatch();

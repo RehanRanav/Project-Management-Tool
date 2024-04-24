@@ -1,10 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  getAllProjectsData,
-  removeFromTeam,
-  updateProjectApproval,
-} from "@/app/lib/actions";
+import { getAllProjectsData } from "@/app/lib/actions";
 import { EmailObj, ProjectData, ProjectPageProps } from "@/definition";
 import ProjectCard from "@/app/ui/Projects/ProjectCard";
 import ProjectInviteModal from "@/app/ui/Projects/ProjectInviteModal";
@@ -20,8 +16,7 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
   );
 
   useEffect(() => {
-    const getData = getAllProjectsData(setProjects, email);
-    return () => getData;
+    getAllProjectsData(setProjects, email);
   }, [email]);
 
   useEffect(() => {
@@ -36,8 +31,6 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
 
   const OpenInviteModal = (projectData: any) => {
     setOpenModal(true);
-    console.log(projects);
-
     setProjectCardData(projectData);
   };
 

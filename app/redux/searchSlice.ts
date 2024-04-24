@@ -11,7 +11,7 @@ const searchSlice: any = createSlice({
   reducers: {
     filterCards: (state, action: PayloadAction<string | undefined>) => {
       const input = action.payload;
-        state.input = input || "";
+      state.input = input || "";
     },
   },
 });

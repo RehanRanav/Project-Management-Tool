@@ -5,9 +5,8 @@ import ProjectDropdownBtn from "@/app/ui/Projects/boards/ProjectDropdownBtn";
 import { authConfig } from "@/auth";
 import { getServerSession } from "next-auth";
 
-const Header =async () => {
+const Header = async () => {
   const session = await getServerSession(authConfig);
-  
 
   return (
     <div className="flex p-4 border-b items-center justify-between">
@@ -16,7 +15,7 @@ const Header =async () => {
           <Jiralogo />
         </div>
         <CreateTaskBtn />
-        <ProjectDropdownBtn email={session?.user?.email || ""}/>
+        <ProjectDropdownBtn email={session?.user?.email || ""} />
       </div>
       <div className="font-medium flex items-center gap-4">
         <UserInfo />

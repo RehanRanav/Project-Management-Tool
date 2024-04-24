@@ -5,7 +5,7 @@ import { ProjectPageProps } from "@/definition";
 import { Dropdown } from "flowbite-react";
 import Link from "next/link";
 import React, { useState } from "react";
-import ProjectCreateModal from "../../ProjectCreateModal";
+import ProjectCreateModal from "@/app/ui/ProjectCreateModal";
 
 const ProjectDropdownBtn: React.FC<ProjectPageProps> = ({ email }) => {
   const project = useAppSelector(selectProject);
