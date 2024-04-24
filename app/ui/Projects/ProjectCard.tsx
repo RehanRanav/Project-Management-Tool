@@ -55,7 +55,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             alt="Project Icon"
             width={24}
             height={24}
-            className="rounded"
+            className="rounded w-6 h-6"
           />
           {project.createdBy == email && (
             <button
@@ -95,9 +95,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             placement="left"
             className="text-[10px]"
           >
-            <img
-              src={userData.image}
+            <Image
+              src={userData.image || "/assets/default-profile.svg"}
               alt="Profile"
+              width={24}
+              height={24}
               className="h-6 w-6 rounded-full"
             />
           </Tooltip>

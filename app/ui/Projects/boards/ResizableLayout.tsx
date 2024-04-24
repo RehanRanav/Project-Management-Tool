@@ -14,7 +14,7 @@ const ResizableLayout = () => {
     return () => {
       dispatch(resetTask());
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <PanelGroup autoSaveId="Tasks" direction="horizontal">

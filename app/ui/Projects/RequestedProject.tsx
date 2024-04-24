@@ -22,7 +22,7 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
   useEffect(() => {
     const getData = getAllProjectsData(setProjects, email);
     return () => getData;
-  }, []);
+  }, [email]);
 
   useEffect(() => {
     const temp = projects.filter((project) =>
@@ -32,7 +32,7 @@ const RequestedProject: React.FC<ProjectPageProps> = ({ email }) => {
       )
     );
     setFilterdRequestedProjects(temp);
-  }, [projects]);
+  }, [projects, email]);
 
   const OpenInviteModal = (projectData: any) => {
     setOpenModal(true);

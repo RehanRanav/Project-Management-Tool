@@ -8,6 +8,7 @@ import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 import { GrDrag } from "react-icons/gr";
+import Image from "next/image";
 
 const customeTheme: CustomFlowbiteTheme["tooltip"] = {
   base: "absolute z-10 inline-block rounded-sm px-2 py-1 text-xs font-medium shadow-sm",
@@ -32,14 +33,14 @@ const TaskCard: React.FC<TaskObject> = ({
       },
     });
 
-  const issueTypes = [
-    { icon: <RiTaskFill className="text-sky-400" />, content: `Task` },
-    { icon: <RiBookmarkFill className="text-green-400" />, content: `Story` },
-    { icon: <PiDiceOneFill className="text-red-400" />, content: `Bug` },
-    { icon: <HiBolt className="text-violet-400" />, content: `Epic` },
-  ];
-
   useEffect(() => {
+    const issueTypes = [
+      { icon: <RiTaskFill className="text-sky-400" />, content: `Task` },
+      { icon: <RiBookmarkFill className="text-green-400" />, content: `Story` },
+      { icon: <PiDiceOneFill className="text-red-400" />, content: `Bug` },
+      { icon: <HiBolt className="text-violet-400" />, content: `Epic` },
+    ];
+
     if (issueType) {
       const selectedIssueType = issueTypes.find(
         (item) => item.content === issueType
@@ -92,9 +93,11 @@ const TaskCard: React.FC<TaskObject> = ({
               placement="left"
               className="text-[10px]"
             >
-              <img
-                src={assignTo.image}
+              <Image
+                src={assignTo.image || "/assets/default-profile.svg"}
                 alt="Profile"
+                width={24}
+                height={24}
                 className="h-6 w-6 rounded-full"
               />
             </Tooltip>

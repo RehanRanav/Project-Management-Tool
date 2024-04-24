@@ -6,7 +6,7 @@ import {
   Modal,
   Spinner,
 } from "flowbite-react";
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
@@ -18,6 +18,7 @@ import { getProjectData, updateTaskCard } from "@/app/lib/actions";
 import { useParams } from "next/navigation";
 import { useAppSelector } from "@/app/redux/store";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const customeTheme: CustomFlowbiteTheme["dropdown"] = {
   inlineWrapper:
@@ -35,12 +36,16 @@ const TaskModal: FC<TaskModalProps> = ({
   mode,
   cardData,
 }) => {
-  const issueTypes = [
-    { icon: RiTaskFill, color: `text-sky-400`, content: `Task` },
-    { icon: RiBookmarkFill, color: `text-green-400`, content: `Story` },
-    { icon: PiDiceOneFill, color: `text-red-400`, content: `Bug` },
-    { icon: HiBolt, color: `text-violet-400`, content: `Epic` },
-  ];
+  const issueTypes = useMemo(
+    () => [
+      { icon: RiTaskFill, color: `text-sky-400`, content: `Task` },
+      { icon: RiBookmarkFill, color: `text-green-400`, content: `Story` },
+      { icon: PiDiceOneFill, color: `text-red-400`, content: `Bug` },
+      { icon: HiBolt, color: `text-violet-400`, content: `Epic` },
+    ],
+    []
+  );
+
   const [issueType, setIssueType] = useState(issueTypes[0]);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [summaryValue, setSummaryvalue] = useState("");
@@ -69,7 +74,7 @@ const TaskModal: FC<TaskModalProps> = ({
     };
 
     fetchData();
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     if (mode === "TaskCreateMode") {
@@ -89,7 +94,7 @@ const TaskModal: FC<TaskModalProps> = ({
         setSummaryvalue(cardData.task);
       }
     }
-  }, [assigneeArr, cardData, mode]);
+  }, [assigneeArr, cardData, mode, issueTypes]);
 
   const CreateTask = async () => {
     if (issueType.content && assignee && assignee.email) {
@@ -229,9 +234,13 @@ const TaskModal: FC<TaskModalProps> = ({
                 label={
                   assignee && (
                     <div className="flex gap-4 items-center">
-                      <img
-                        src={assignee.image}
+                      <Image
+                        src={`${
+                          assignee.image || "/assets/default-profile.svg"
+                        } `}
                         alt="Profile"
+                        width={28}
+                        height={28}
                         className="h-7 w-7 rounded-md"
                       />
                       <span>{assignee.name}</span>
@@ -248,9 +257,11 @@ const TaskModal: FC<TaskModalProps> = ({
                     className="p-2 flex gap-1 items-center hover:bg-blue-600 hover:text-white"
                     onClick={() => setAssignee(item)}
                   >
-                    <img
-                      src={item.image}
+                    <Image
+                      src={`${item.image || "/assets/default-profile.svg"}`}
                       alt="Profile"
+                      width={28}
+                      height={28}
                       className="h-7 w-7 rounded-md"
                     />
                     <span>{item.name}</span>

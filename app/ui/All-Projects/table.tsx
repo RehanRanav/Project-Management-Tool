@@ -12,6 +12,7 @@ import { MdDelete } from "react-icons/md";
 import CreateProjectBtn from "@/app/ui/CreateProjectBtn";
 import ProjectDeleteModal from "@/app/ui/ProjectDeleteModal";
 import { Table } from "flowbite-react";
+import Image from "next/image";
 
 const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
   const [projects, setProjects] = useState<any[]>([]);
@@ -24,7 +25,7 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
   useEffect(() => {
     const getData = getAllProjectsData(setProjects, email);
     return () => getData;
-  }, []);
+  }, [email]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -108,23 +109,30 @@ const ProjectTable: React.FC<ProjectPageProps> = ({ email }) => {
                     )
                 )
                 .map((project, index) => (
-                  <Table.Row className="group bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <Table.Row
+                    className="group bg-white dark:border-gray-700 dark:bg-gray-800"
+                    key={index}
+                  >
                     <Table.Cell className="whitespace-nowrap font-medium cursor-pointer text-cyan-600 hover:underline dark:text-cyan-500">
-                      <Link href={`projects/${project.projectdata.id}`}>{project.projectdata.title}</Link>
+                      <Link href={`projects/${project.projectdata.id}`}>
+                        {project.projectdata.title}
+                      </Link>
                     </Table.Cell>
 
                     <Table.Cell>{project.projectdata.date}</Table.Cell>
                     <Table.Cell>
                       {
                         <div className="flex gap-2 items-center">
-                          <img
+                          <Image
                             src={
                               userData.find(
                                 (user) =>
                                   user.email === project.projectdata.createdBy
-                              )?.image
+                              )?.image || "/assets/default-profile.svg"
                             }
                             alt="Profile"
+                            width={24}
+                            height={24}
                             className="h-6 w-6 rounded-full"
                           />
                           <span>

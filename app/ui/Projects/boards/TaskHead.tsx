@@ -43,7 +43,7 @@ const TaskHead = () => {
     };
 
     fetchData();
-  }, []);
+  }, [params.id, dispatch]);
 
   useEffect(() => {
     setTitle(project.title);
@@ -58,7 +58,8 @@ const TaskHead = () => {
         titleInputRef.current &&
         !titleInputRef.current.contains(event.target as Node)
       ) {
-        handleTitleCancel();
+        setTitle(title);
+        setDisableTitleInput(true);
       }
     };
 
@@ -68,7 +69,7 @@ const TaskHead = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [disableTitleInput]);
+  }, [disableTitleInput, title]);
 
   const updateTitleValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);

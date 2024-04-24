@@ -1,14 +1,25 @@
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import TaskCard from "@/app/ui/Projects/boards/TaskCard";
 import { useDroppable } from "@dnd-kit/core";
 import { TaskObject, Tasklist } from "@/definition";
 import { useAppSelector } from "@/app/redux/store";
 import { selectSearchInput } from "@/app/redux/searchSlice";
+import { TaskColumnSkeleton } from "@/app/ui/skeleton";
+
 const TaskColumn: React.FC<Tasklist> = ({ title, id, cards }) => {
   const { setNodeRef } = useDroppable({ id: id });
   const searchValue = useAppSelector(selectSearchInput);
   const [filteredTasks, setFilteredTasks] = useState<TaskObject[]>(cards);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (title) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }, [cards, title]);
 
   useEffect(() => {
     if (searchValue !== "") {
@@ -34,7 +45,9 @@ const TaskColumn: React.FC<Tasklist> = ({ title, id, cards }) => {
       id={String(id)}
       strategy={rectSortingStrategy}
     >
-      
+      {isLoading ? (
+        <TaskColumnSkeleton />
+      ) : (
         <div className="bg-gray-200 w-full" ref={setNodeRef}>
           <div className="w-full text-center text-gray-500 p-2 sticky top-0 bg-gray-100 z-10">
             {title}
@@ -55,6 +68,7 @@ const TaskColumn: React.FC<Tasklist> = ({ title, id, cards }) => {
               ))}
           </div>
         </div>
+      )}
     </SortableContext>
   );
 };

@@ -21,7 +21,7 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
   useEffect(() => {
     const getData = getAllProjectsData(setProjects, email);
     return () => getData;
-  }, []);
+  }, [email]);
 
   useEffect(() => {
     const tempProject = projects.filter(
@@ -37,7 +37,7 @@ const ProjectIndex: React.FC<ProjectPageProps> = ({ email }) => {
     } else {
       setViewAllBtn(false);
     }
-  }, [projects]);
+  }, [projects, email]);
 
   const handleClick = async (project: ProjectData) => {
     await dispatch(setProject(project));

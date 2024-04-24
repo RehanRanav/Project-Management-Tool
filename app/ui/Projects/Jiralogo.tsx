@@ -10,6 +10,8 @@ function Jiralogo() {
         alt="Project Icon"
         width={150}
         height={170}
+        className="w-40 h-auto"
+        priority
       />
     </Link>
   );
