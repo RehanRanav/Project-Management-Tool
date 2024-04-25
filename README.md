@@ -15,8 +15,8 @@ Follow these steps to run the application locally:
    - Configure the OAuth consent screen with the necessary information.
    - Create credentials and copy the Client Id.
    - In the project, create a `.env` file at the root and add `REACT_APP_GOOGLE_CLIENT_ID=YOUR_CLIENT_ID`.
-4.3. **Add Firebase:**
-   - Obtain a Firestore Credentials from the FireBase
+4. **Add Firebase:**
+   - Obtain a Firestore Credentials from the Firebase
    - In the project, create a `firebase.config.ts` file at the root and add your Firbase configuration. 
-5. Run the application: `npm start`
+5. Run the application: `npm run dev`
 6. Open your browser and visit `http://localhost:3000`.
