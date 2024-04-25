@@ -3,13 +3,13 @@ import { HiAtSymbol, HiOutlineKey, HiArrowNarrowRight } from "react-icons/hi";
 import { Button } from "@/app/ui/Button";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 const LoginForm = () => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
 

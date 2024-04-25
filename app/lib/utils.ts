@@ -6,9 +6,9 @@ export const generateRandomNumber = () => {
   const randomNumber = nanoid();
   return randomNumber;
 };
-export const generateId = () =>{
+export const generateId = () => {
   return nanoid();
-}
+};
 
 export const emailValidation = (email: string) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,6 +19,20 @@ export const emailValidation = (email: string) => {
 export const differenceInDays = (date: string) => {
   const dateTosubtract = dayjs(date);
   const currentDate = dayjs();
-  const differenceInDays = dateTosubtract.diff(currentDate,"days");
-  return differenceInDays
+  const differenceInDays = dateTosubtract.diff(currentDate, "days");
+  return differenceInDays;
 };
+
+export const dateValidation = (date: string) => {
+  const enteredDate = dayjs(date);
+  const currentDate = dayjs();
+
+  if (currentDate.isBefore(enteredDate)) {
+    return true;
+  } else {
+    false;
+  }
+};
+
+export const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);

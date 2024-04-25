@@ -28,9 +28,15 @@ const projectSlice: any = createSlice({
       }
       return state;
     },
+    updateTitle:(state, action: PayloadAction<string | undefined>) => {
+      if(action.payload){
+        state.title = action.payload;
+      }
+      return state;
+    }
   },
 });
 
-export const { addProject, setProject } = projectSlice.actions;
+export const { addProject, setProject, updateTitle } = projectSlice.actions;
 export const selectProject = (state: { project: ProjectData }) => state.project;
 export default projectSlice.reducer;

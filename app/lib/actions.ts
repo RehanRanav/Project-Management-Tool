@@ -18,6 +18,7 @@ import {
   Tasklist,
 } from "@/definition";
 import { Session } from "next-auth";
+import { Dispatch, SetStateAction } from "react";
 
 export const addUsertoDatabase = async (user: Session | null) => {
   try {
@@ -37,7 +38,7 @@ export const addUsertoDatabase = async (user: Session | null) => {
       });
     }
   } catch (error) {
-    console.log("error while Add user", error);
+    return false;
   }
 };
 
@@ -49,7 +50,7 @@ export const addProjectToFirebase = async (projectdata: ProjectData) => {
       });
     }
   } catch (error) {
-    console.error("Error adding project to Firebase:", error);
+    return false;
   }
 };
 
@@ -61,17 +62,17 @@ export const setTaskToFirebase = async (taskdata: ProjectTask) => {
       });
     }
   } catch (error) {
-    console.error("Error adding tasks to Firebase:", error);
+    return false;
   }
 };
 
 export const getAllProjectsData = (
-  setProjects: React.Dispatch<React.SetStateAction<any[]>>,
+  setProjects: Dispatch<SetStateAction<any[]>>,
   email: string
-) => {
+): Boolean | undefined => {
   try {
     const q = query(collection(db, "projects"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    onSnapshot(q, (querySnapshot) => {
       const items: any[] = [];
 
       querySnapshot.forEach((doc) => {
@@ -84,9 +85,10 @@ export const getAllProjectsData = (
           items.push({ ...doc.data() });
       });
       setProjects(items);
+      return true;
     });
   } catch (error) {
-    console.error("Error while getting project All data: ", error);
+    return;
   }
 };
 
@@ -152,7 +154,31 @@ export const getProjectData = async (id: string) => {
 
     return project;
   } catch (error) {
-    console.log(error);
+    return null;
+  }
+};
+
+export const searchForProjectName = async (
+  Projectname: string,
+  email: string
+) => {
+  try {
+    const q = query(
+      collection(db, "projects"),
+      where("projectdata.createdBy", "==", email)
+    );
+
+    let matchFlag = false;
+    const projectQuerySnapshot = await getDocs(q);
+    if (!projectQuerySnapshot.empty) {
+      projectQuerySnapshot.docs.map((doc) => {
+        if (doc.data().projectdata.title === Projectname) {
+          matchFlag = true;
+        }
+      });
+    }
+    return matchFlag;
+  } catch (error) {
     return null;
   }
 };
@@ -170,7 +196,6 @@ export const getUserData = async (email: string) => {
     }
     return userData;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -197,7 +222,6 @@ export const updateProjectdata = async (
     }
     return true;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -232,7 +256,6 @@ export const updateProjectApproval = async (
       return true;
     }
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -264,7 +287,6 @@ export const removeFromTeam = async (projectId: string, email: string) => {
       return true;
     }
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -275,16 +297,22 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
       collection(db, "projects"),
       where("projectdata.id", "==", projectId)
     );
+    const taskQuery = query(
+      collection(db, "tasks"),
+      where("taskdata.projectId", "==", projectId)
+    );
     const projectQuerySnapshot = await getDocs(q);
-    if (!projectQuerySnapshot.empty) {
-      const docId = projectQuerySnapshot.docs[0].id;
-      await deleteDoc(doc(db, "projects", docId));
+    const tasksQuerySnapshot = await getDocs(taskQuery);
+    if (!projectQuerySnapshot.empty && !tasksQuerySnapshot.empty) {
+      const projectdocId = projectQuerySnapshot.docs[0].id;
+      const taskdocId = tasksQuerySnapshot.docs[0].id;
+      await deleteDoc(doc(db, "projects", projectdocId));
+      await deleteDoc(doc(db, "tasks", taskdocId));
     } else {
       return null;
     }
     return true;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -296,13 +324,13 @@ export const addTasktoFirebase = async (taskdata: ProjectTask) => {
         collection(db, "tasks"),
         where("taskdata.projectId", "==", taskdata.projectId)
       );
-      
+
       const taskQuerySnapshot = await getDocs(q);
       if (!taskQuerySnapshot.empty) {
         const getTask = taskQuerySnapshot.docs[0];
         await updateDoc(getTask.ref, {
           "taskdata.tasklist": taskdata.tasklist,
-          "taskdata.tickets": taskdata.tickets
+          "taskdata.tickets": taskdata.tickets,
         });
       } else {
         return null;
@@ -310,7 +338,6 @@ export const addTasktoFirebase = async (taskdata: ProjectTask) => {
       return true;
     }
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -360,7 +387,6 @@ export const updateTaskCard = async (task: TaskObject, projectId: string) => {
       return false;
     }
   } catch (error) {
-    console.log(error);
     return false;
   }
 };

@@ -1,16 +1,24 @@
 "use client";
-import { Button, CustomFlowbiteTheme, Dropdown, Modal } from "flowbite-react";
-import React, { FC, useEffect, useRef, useState } from "react";
+import {
+  Button,
+  CustomFlowbiteTheme,
+  Dropdown,
+  Modal,
+  Spinner,
+} from "flowbite-react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { RiTaskFill, RiBookmarkFill } from "react-icons/ri";
 import { PiDiceOneFill, PiWarningDiamondFill } from "react-icons/pi";
 import { HiBolt } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
 import { addTask, getTicketNo, updateCard } from "@/app/redux/taskSlice";
-import { TaskModalProps, TaskObject, Tasklist, UserData } from "@/definition";
+import { TaskModalProps, TaskObject, UserData } from "@/definition";
 import { generateRandomNumber } from "@/app/lib/utils";
 import { getProjectData, updateTaskCard } from "@/app/lib/actions";
 import { useParams } from "next/navigation";
 import { useAppSelector } from "@/app/redux/store";
+import toast from "react-hot-toast";
+import Image from "next/image";
 
 const customeTheme: CustomFlowbiteTheme["dropdown"] = {
   inlineWrapper:
@@ -28,12 +36,16 @@ const TaskModal: FC<TaskModalProps> = ({
   mode,
   cardData,
 }) => {
-  const issueTypes = [
-    { icon: RiTaskFill, color: `text-sky-400`, content: `Task` },
-    { icon: RiBookmarkFill, color: `text-green-400`, content: `Story` },
-    { icon: PiDiceOneFill, color: `text-red-400`, content: `Bug` },
-    { icon: HiBolt, color: `text-violet-400`, content: `Epic` },
-  ];
+  const issueTypes = useMemo(
+    () => [
+      { icon: RiTaskFill, color: `text-sky-400`, content: `Task` },
+      { icon: RiBookmarkFill, color: `text-green-400`, content: `Story` },
+      { icon: PiDiceOneFill, color: `text-red-400`, content: `Bug` },
+      { icon: HiBolt, color: `text-violet-400`, content: `Epic` },
+    ],
+    []
+  );
+
   const [issueType, setIssueType] = useState(issueTypes[0]);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [summaryValue, setSummaryvalue] = useState("");
@@ -43,6 +55,8 @@ const TaskModal: FC<TaskModalProps> = ({
   const dispatch = useDispatch();
   const params = useParams();
   const ticketno = useAppSelector(getTicketNo);
+  const [isLoading, setIsLoading] = useState(false);
+  const TaskModalSubmitBtn = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,12 +69,12 @@ const TaskModal: FC<TaskModalProps> = ({
           }
         }
       } catch (error) {
-        console.error("Error fetching User data:", error);
+        return;
       }
     };
 
     fetchData();
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     if (mode === "TaskCreateMode") {
@@ -80,9 +94,9 @@ const TaskModal: FC<TaskModalProps> = ({
         setSummaryvalue(cardData.task);
       }
     }
-  }, [assigneeArr, cardData, mode]);
+  }, [assigneeArr, cardData, mode, issueTypes]);
 
-  const CreateTask = () => {
+  const CreateTask = async () => {
     if (issueType.content && assignee && assignee.email) {
       const summary = summaryValue.trim();
       if (summary !== "") {
@@ -92,9 +106,12 @@ const TaskModal: FC<TaskModalProps> = ({
           issueType: issueType.content,
           initialStatus: "todo",
           assignTo: assignee,
-          ticketNo: ticketno + 1 
+          ticketNo: ticketno + 1,
         };
-        dispatch(addTask(task));
+        setIsLoading(true);
+        await dispatch(addTask(task));
+        setIsLoading(false);
+        toast.success("Task card created successfully");
         closeModal();
       } else {
         setSummaryError("Summary is required");
@@ -114,9 +131,12 @@ const TaskModal: FC<TaskModalProps> = ({
           assignTo: assignee,
           ticketNo: cardData?.ticketNo,
         };
+        setIsLoading(true);
         const res = await updateTaskCard(task, params.id as string);
         if (res) {
           dispatch(updateCard(res.taskdata.tasklist));
+          setIsLoading(false);
+          toast.success("Task card updated successfully");
           closeModal();
         }
       } else {
@@ -133,6 +153,12 @@ const TaskModal: FC<TaskModalProps> = ({
     setSummaryvalue("");
     if (summaryRef.current) summaryRef.current.value = "";
   };
+  const handleKeyDownEvent = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      TaskModalSubmitBtn.current?.click();
+    }
+  };
 
   return (
     <div>
@@ -141,13 +167,15 @@ const TaskModal: FC<TaskModalProps> = ({
         show={openModal}
         onClose={closeModal}
         initialFocus={summaryRef}
+        size={"xl"}
+        onKeyDown={handleKeyDownEvent}
       >
         <Modal.Header>
           {mode === "TaskCreateMode" ? "Create" : "Update"} issue
         </Modal.Header>
         <Modal.Body>
           <div className="flex flex-col gap-4">
-            <span className="relative pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
+            <span className="relative w-fit pr-4 text-sm after:content-['*'] after:block after:absolute after:-top-1 after:right-0 after:text-red-600">
               Required fields are marked with an asterisk{" "}
             </span>
             <div className="flex flex-col gap-2">
@@ -206,9 +234,13 @@ const TaskModal: FC<TaskModalProps> = ({
                 label={
                   assignee && (
                     <div className="flex gap-4 items-center">
-                      <img
-                        src={assignee.image}
+                      <Image
+                        src={`${
+                          assignee.image || "/assets/default-profile.svg"
+                        } `}
                         alt="Profile"
+                        width={28}
+                        height={28}
                         className="h-7 w-7 rounded-md"
                       />
                       <span>{assignee.name}</span>
@@ -225,9 +257,11 @@ const TaskModal: FC<TaskModalProps> = ({
                     className="p-2 flex gap-1 items-center hover:bg-blue-600 hover:text-white"
                     onClick={() => setAssignee(item)}
                   >
-                    <img
-                      src={item.image}
+                    <Image
+                      src={`${item.image || "/assets/default-profile.svg"}`}
                       alt="Profile"
+                      width={28}
+                      height={28}
                       className="h-7 w-7 rounded-md"
                     />
                     <span>{item.name}</span>
@@ -246,12 +280,19 @@ const TaskModal: FC<TaskModalProps> = ({
               Cancel
             </button>
             <Button
+              ref={TaskModalSubmitBtn}
               color="blue"
               size="sm"
               onClick={mode == "TaskCreateMode" ? CreateTask : EditTask}
               className="rounded-sm"
             >
-              {mode === "TaskCreateMode" ? "Create" : "Update"}
+              {isLoading ? (
+                <Spinner />
+              ) : mode === "TaskCreateMode" ? (
+                "Create"
+              ) : (
+                "Update"
+              )}
             </Button>
           </div>
         </Modal.Footer>

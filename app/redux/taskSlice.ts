@@ -44,7 +44,11 @@ const taskSlice: any = createSlice({
         setTaskToFirebase(state);
       }
     },
-
+    resetTask: (state) => {
+      state.projectId = "";
+      state.tickets = 0;
+      state.tasklist = initialState.tasklist;
+    },
     setTask: (state, action: PayloadAction<ProjectTask | undefined>) => {
       if (action.payload) {
         return action.payload;
@@ -91,8 +95,14 @@ const taskSlice: any = createSlice({
   },
 });
 
-export const { addTask, setTask, setTasktoFirebase, updateTask, updateCard } =
-  taskSlice.actions;
+export const {
+  addTask,
+  setTask,
+  setTasktoFirebase,
+  updateTask,
+  resetTask,
+  updateCard,
+} = taskSlice.actions;
 export const selectTask = (state: { task: ProjectTask }) => state.task.tasklist;
 export const getTicketNo = (state: { task: ProjectTask }) => state.task.tickets;
 export default taskSlice.reducer;

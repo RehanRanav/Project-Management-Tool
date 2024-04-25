@@ -9,6 +9,7 @@ export interface TaskObject {
   initialStatus?: UniqueIdentifier;
   assignTo: UserData;
   ticketNo: number;
+  columnId?: string;
 }
 export interface Tasklist {
   id: UniqueIdentifier;
@@ -18,7 +19,7 @@ export interface Tasklist {
 export interface ProjectTask {
   tasklist: Tasklist[];
   projectId: UniqueIdentifier;
-  tickets: number
+  tickets: number;
 }
 export interface ProjectData {
   id: UniqueIdentifier;
@@ -46,6 +47,22 @@ export interface TaskModalProps {
   mode: string;
   cardData?: TaskObject;
 }
+export interface ProjectCreateModalProps {
+  email: string;
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+}
+export interface ProjectDeleteModalProps {
+  projectData: ProjectData | null;
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+}
+export interface ProjectInviteModalProps{
+  email: string;
+  projectData: ProjectData | null;
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+}
 export interface UserData {
   name?: string;
   email?: string;
@@ -57,6 +74,6 @@ export interface TaskType {
   content: string;
 }
 
-export interface SearchState{
-  input: string ;
+export interface SearchState {
+  input: string;
 }

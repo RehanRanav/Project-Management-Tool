@@ -1,16 +1,11 @@
-import { setProject } from "@/app/redux/projectSlice";
 import { ProjectCardProps, UserData } from "@/definition";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineWatchLater, MdDelete } from "react-icons/md";
-import { HiDotsHorizontal } from "react-icons/hi";
 import { differenceInDays } from "@/app/lib/utils";
-import { deleteProjectFromFirbase, getUserData } from "@/app/lib/actions";
-import {
-  Dropdown,
-  DropdownItem,
-  Tooltip,
-} from "flowbite-react";
+import { getUserData } from "@/app/lib/actions";
+import { Tooltip } from "flowbite-react";
+import ProjectDeleteModal from "@/app/ui/ProjectDeleteModal";
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
@@ -20,6 +15,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const [deadlineLabel, setDeadlineLabel] = useState("");
   const CardRef = useRef<HTMLDivElement | null>(null);
   const [userData, setUserData] = useState<UserData>({});
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if (project) {
@@ -37,19 +33,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       }
     };
     fetchUserData();
-  }, []);
+  }, [project]);
 
-  const handleMenuClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleDeleteBtnClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation();
+    setOpenModal(true);
   };
-
-  const deleteProject = async (id:string)=>{
-    const res= await deleteProjectFromFirbase(id);
-  }
 
   return (
     <div
-      className="p-4 shadow-sm shadow-gray-300 bg-white hover:shadow-md rounded-sm flex flex-col gap-3 cursor-pointer min-w-72"
+      className="group px-3 py-2 shadow-sm shadow-gray-300 bg-white hover:shadow-md border rounded-sm flex flex-col justify-between cursor-pointer w-52 h-40 max-w-52 max-h-48"
       ref={CardRef}
       onClick={ClickFunction}
     >
@@ -60,32 +55,33 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             alt="Project Icon"
             width={24}
             height={24}
-            className="rounded"
+            className="rounded w-6 h-6"
           />
           {project.createdBy == email && (
-            <div
-              className="p-2 hover:bg-gray-100 rounded-sm"
-              onClick={handleMenuClick}
+            <button
+              className="w-fit p-1 group-hover:opacity-100 opacity-0 rounded-md text-red-700 hover:bg-gray-100"
+              onClick={handleDeleteBtnClick}
             >
-              <Dropdown arrowIcon={false} inline label={<HiDotsHorizontal />}>
-                <DropdownItem onClick={()=>deleteProject(project.id as string)}>
-                  <MdDelete size={20} /> Delete project
-                </DropdownItem>
-              </Dropdown>
-            </div>
+              <MdDelete size={20} />
+            </button>
           )}
+          <ProjectDeleteModal
+            projectData={project}
+            setOpenModal={setOpenModal}
+            openModal={openModal}
+          />
         </div>
-        <div className="text-base font-bold tracking-tight text-gray-900 dark:text-white">
+        <div className="text-base font-bold tracking-tight text-blue-600">
           {project.title}
         </div>
       </div>
-      <div className="font-normal text-xs text-gray-700 rounded-sm p-0.5 dark:text-gray-400 h-14 line-clamp-3 leading-relaxed">
+      <div className="font-normal text-xs text-gray-700 rounded-sm p-0.5 dark:text-gray-400 h-10 bg-slate-50 leading-relaxed line-clamp-2">
         {project.description}
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-end">
         <div
           className={`text-xs flex gap-2 items-center w-fit p-0.5 rounded ${
-            deadlineLabel != "overdue" ? "bg-gray-100" : "bg-red-100"
+            deadlineLabel != "overdue" ? "" : "text-red-700"
           }`}
         >
           <span>
@@ -97,12 +93,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <Tooltip
             content={`Created By: ${userData.name}`}
             placement="left"
-            className="text-xs"
+            className="text-[10px]"
           >
-            <img
-              src={userData.image}
+            <Image
+              src={userData.image || "/assets/default-profile.svg"}
               alt="Profile"
-              className="h-7 w-7 rounded-md"
+              width={24}
+              height={24}
+              className="h-6 w-6 rounded-full"
             />
           </Tooltip>
         </div>

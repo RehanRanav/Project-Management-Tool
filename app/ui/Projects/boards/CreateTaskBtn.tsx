@@ -1,5 +1,5 @@
 "use client";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import TaskModal from "@/app/ui/Projects/boards/TaskModal";
 import { Button } from "flowbite-react";
 
@@ -14,7 +14,7 @@ const CreateTaskBtn = () => {
         onClick={() => setOpenModal(true)}
         className="rounded-sm"
       >
-        Create
+        Create Task
       </Button>
       <TaskModal
         openModal={openModal}
