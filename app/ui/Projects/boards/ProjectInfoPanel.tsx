@@ -191,13 +191,13 @@ const ProjectInfoPanel = () => {
               <span className="font-medium">Project Description:</span>
               <div
                 className={`h-20 rounded p-1 line-clamp-4 leading-relaxed text-xs relative
-                ${expandToggle ? "h-52 line-clamp-none" : "h-20"}`}
+                ${expandToggle ? "h-52 line-clamp-none overflow-y-scroll": "h-20"}`}
                 ref={descriptionRef}
               >
                 {project.description}
                 {isDescriptionOverflowed && (
                   <button
-                    className={`text-sm bg-transparent absolute right-1 bottom-0 transition-all ease-in-out duration-700`}
+                    className={`text-sm bg-transparent sticky left-40 bottom-0 transition-all ease-in-out duration-700`}
                     onClick={handleDescriptionHeight}
                     ref={expandBtnRef}
                     title="view more"
@@ -218,9 +218,9 @@ const ProjectInfoPanel = () => {
                     <Image
                       src={team.image || "/assets/default-profile.svg"}
                       alt="Profile"
-                      width={32}
-                      height={32}
-                      className="h-8 w-8 rounded-full"
+                      width={28}
+                      height={28}
+                      className="h-7 w-7 rounded-full"
                     />
                     <span>{team.name}</span>
                   </div>

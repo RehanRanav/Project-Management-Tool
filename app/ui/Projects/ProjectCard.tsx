@@ -71,7 +71,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             openModal={openModal}
           />
         </div>
-        <div className="text-base font-bold tracking-tight text-blue-600">
+        <div className="text-base font-bold tracking-tight text-blue-600 truncate w-full">
           {project.title}
         </div>
       </div>
