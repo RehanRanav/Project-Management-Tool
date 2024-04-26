@@ -5,15 +5,15 @@ import {
   generateId,
   tomorrow,
 } from "@/app/lib/utils";
-import { addProject } from "@/app/redux/projectSlice";
-import { setTasktoFirebase } from "@/app/redux/taskSlice";
+// import { setTasktoFirebase } from "@/app/redux/taskSlice";
 import { EmailObj, ProjectData, ProjectCreateModalProps } from "@/definition";
 import { Button, Modal, Spinner } from "flowbite-react";
-import { useRouter } from "next/navigation";
 import { FC, useRef, useState, KeyboardEvent } from "react";
 import { PiWarningDiamondFill } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { searchForProjectName } from "@/app/lib/actions";
+import { addprojectToDB } from "../redux/projectSlice";
+import { AppDispatch } from "../redux/store";
 
 const ProjectCreateModal: FC<ProjectCreateModalProps> = ({
   email,
@@ -28,8 +28,7 @@ const ProjectCreateModal: FC<ProjectCreateModalProps> = ({
   const createProjectBtnRef = useRef<HTMLButtonElement | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fieldError, setFieldError] = useState<string | null>(null);
-  const dispatch = useDispatch();
-  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const CreateProject = async () => {
     if (
@@ -114,9 +113,9 @@ const ProjectCreateModal: FC<ProjectCreateModalProps> = ({
         createdBy: email,
         team: filteredEmailList,
       };
-      await dispatch(addProject(project));
-      await dispatch(setTasktoFirebase(project.id));
-      router.push(`/projects/${project.id}`);
+      dispatch(addprojectToDB(project));
+      // await dispatch(setTasktoFirebase(project.id));
+      // router.push(`/projects/${project.id}`);
     }
   };
 

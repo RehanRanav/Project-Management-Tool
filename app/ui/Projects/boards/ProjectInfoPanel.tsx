@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { IoIosArrowDown, IoIosClose } from "react-icons/io";
 import { BiEdit } from "react-icons/bi";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { getProjectData, updateProjectdata } from "@/app/lib/actions";
 import { useDispatch } from "react-redux";
 import {
@@ -31,7 +31,6 @@ const ProjectInfoPanel = () => {
   const titleInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch();
   const params = useParams();
-  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,8 +42,6 @@ const ProjectInfoPanel = () => {
             setUserdata(res.userdata);
             await dispatch(setProject(res.projectdata));
             await dispatch(setTask(res.taskdata));
-          } else {
-            router.push(`/${project.id}`)
           }
         }
       } catch (error) {
@@ -53,7 +50,7 @@ const ProjectInfoPanel = () => {
     };
 
     fetchData();
-  }, [params.id, dispatch,router, project.id]);
+  }, [params.id, dispatch]);
 
   useEffect(() => {
     if (userdata.length > 0 && project) {
