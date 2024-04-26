@@ -17,7 +17,7 @@ const UserInfo = async () => {
         content={session?.user?.name}
         arrow={false}
         animation="duration-500"
-        placement="bottom"
+        placement="bottom-end"
       >
         <div className="w-40 text-sm font-semibold text-right truncate hidden lg:block">
           Hello, {session?.user?.name}

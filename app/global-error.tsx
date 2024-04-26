@@ -1,17 +1,16 @@
 "use client";
 
-export default function GlobalError({
+export default function ErrorBoundary({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
   return (
-    <html>
-      <body>
-        <h2>Something went wrong!</h2>
-        <button onClick={() => reset()}>Try again</button>
-      </body>
-    </html>
+    <div>
+      <h2>{`Something went wrong! ${error}`}</h2>
+      <button onClick={() => reset()}>Try again</button>
+    </div>
   );
 }

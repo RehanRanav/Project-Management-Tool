@@ -38,7 +38,7 @@ export const addUsertoDatabase = async (user: Session | null) => {
       });
     }
   } catch (error) {
-    return false;
+    throw new Error("Failed to add user");
   }
 };
 
@@ -62,14 +62,14 @@ export const setTaskToFirebase = async (taskdata: ProjectTask) => {
       });
     }
   } catch (error) {
-    return false;
+    throw new Error("Failed to add Project");
   }
 };
 
 export const getAllProjectsData = (
   setProjects: Dispatch<SetStateAction<any[]>>,
   email: string
-): Boolean | undefined => {
+): Boolean | any => {
   try {
     const q = query(collection(db, "projects"));
     onSnapshot(q, (querySnapshot) => {
@@ -88,7 +88,7 @@ export const getAllProjectsData = (
       return true;
     });
   } catch (error) {
-    return;
+    throw new Error("Failed to Get Projects");
   }
 };
 
@@ -179,7 +179,7 @@ export const searchForProjectName = async (
     }
     return matchFlag;
   } catch (error) {
-    return null;
+    throw new Error("Unable To get project");
   }
 };
 
@@ -196,7 +196,7 @@ export const getUserData = async (email: string) => {
     }
     return userData;
   } catch (error) {
-    return null;
+    throw new Error("Unable to get User");
   }
 };
 
@@ -222,7 +222,7 @@ export const updateProjectdata = async (
     }
     return true;
   } catch (error) {
-    return null;
+    throw new Error("Failed to add Update");
   }
 };
 
@@ -256,7 +256,7 @@ export const updateProjectApproval = async (
       return true;
     }
   } catch (error) {
-    return null;
+    throw new Error("Unable To Handle Request");
   }
 };
 
@@ -287,7 +287,7 @@ export const removeFromTeam = async (projectId: string, email: string) => {
       return true;
     }
   } catch (error) {
-    return null;
+    throw new Error("Unable To Handle Request");
   }
 };
 
@@ -313,7 +313,7 @@ export const deleteProjectFromFirbase = async (projectId: string) => {
     }
     return true;
   } catch (error) {
-    return null;
+    throw new Error("Failed to Delete project");
   }
 };
 
@@ -387,6 +387,6 @@ export const updateTaskCard = async (task: TaskObject, projectId: string) => {
       return false;
     }
   } catch (error) {
-    return false;
+    throw new Error("Failed During Update");
   }
 };

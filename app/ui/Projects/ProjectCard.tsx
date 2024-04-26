@@ -20,10 +20,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   useEffect(() => {
     if (project) {
       const difference = differenceInDays(project.date);
-      if (difference <= 0) {
+      if (difference < 0) {
         setDeadlineLabel("overdue");
       } else {
-        setDeadlineLabel(`${difference} days left`);
+        setDeadlineLabel(`${difference != 0 ? difference : 'one'} day(s) left`);
       }
     }
     const fetchUserData = async () => {
@@ -44,7 +44,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <div
-      className="group px-3 py-2 shadow-sm shadow-gray-300 bg-white hover:shadow-md border rounded-sm flex flex-col justify-between cursor-pointer w-52 h-40 max-w-52 max-h-48"
+      className="group px-3 py-2 shadow-sm shadow-gray-300 bg-white hover:shadow-md border rounded-sm flex flex-col justify-between cursor-pointer w-52 h-40 max-w-52 max-h-48 select-none"
       ref={CardRef}
       onClick={ClickFunction}
     >

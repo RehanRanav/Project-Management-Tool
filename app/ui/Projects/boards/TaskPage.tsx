@@ -15,7 +15,6 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useDispatch } from "react-redux";
 import { Tasklist } from "@/definition";
 import TaskHead from "@/app/ui/Projects/boards/TaskHead";
@@ -38,8 +37,7 @@ const TaskPage = () => {
     useSensor(PointerSensor, {
       activationConstraint: {
         delay: 100,
-        tolerance: 5,
-        distance: 10,
+        tolerance: 0,
       },
     }),
     useSensor(TouchSensor),
@@ -145,7 +143,6 @@ const TaskPage = () => {
           collisionDetection={closestCorners}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
-          modifiers={[restrictToWindowEdges]}
         >
           {tasks.map((column) => (
             <TaskColumn

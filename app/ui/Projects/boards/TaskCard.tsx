@@ -54,18 +54,19 @@ const TaskCard: React.FC<TaskObject> = ({
   return (
     <>
       <div
-        {...attributes}
         ref={setNodeRef}
         style={{
           transition,
           transform: CSS.Translate.toString(transform),
         }}
-        className={`py-2 pr-2 pl-1.5 shadow-sm shadow-gray-300 hover:shadow-md hover:bg-gray-50 rounded-sm cursor-pointer h-full w-full flex gap-2 items-center ${
+        {...listeners}
+        {...attributes}
+        className={`py-2 pr-2 pl-1.5 shadow-sm shadow-gray-300 hover:shadow-md hover:bg-gray-50 rounded-sm cursor-pointer h-full w-full flex gap-2 items-center select-none ${
           columnId === "done" ? "bg-gray-100" : "bg-white"
         }`}
         onClick={() => setOpenModal(true)}
       >
-        <div {...listeners} className="cursor-grabbing ">
+        <div className="cursor-grabbing">
           <GrDrag size={16} color="gray" />
         </div>
         <div className="flex flex-col gap-3 w-full">
