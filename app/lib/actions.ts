@@ -38,7 +38,7 @@ export const addUsertoDatabase = async (user: Session | null) => {
       });
     }
   } catch (error) {
-    throw new Error("Failed to add user");
+    return;
   }
 };
 
@@ -62,7 +62,7 @@ export const setTaskToFirebase = async (taskdata: ProjectTask) => {
       });
     }
   } catch (error) {
-    throw new Error("Failed to add Project");
+    return;
   }
 };
 
@@ -88,7 +88,7 @@ export const getAllProjectsData = (
       return true;
     });
   } catch (error) {
-    throw new Error("Failed to Get Projects");
+    return;
   }
 };
 

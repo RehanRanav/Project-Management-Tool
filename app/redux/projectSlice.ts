@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ProjectData } from "@/definition";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase.config";
+import { addProjectToFirebase } from "@/app/lib/actions";
 
 export const addprojectToDB = createAsyncThunk(
   "addProject",
@@ -9,8 +10,9 @@ export const addprojectToDB = createAsyncThunk(
     try {
       if (projectdata.title !== "" && projectdata.createdBy !== "") {
         await addDoc(collection(db, "projects"), {
-          projectdata,
+          ...projectdata,
         });
+        return projectdata;
       }
     } catch (error) {
       return false;
@@ -31,13 +33,13 @@ const projectSlice: any = createSlice({
   name: "project",
   initialState,
   reducers: {
-    // addProject: (state, action: PayloadAction<ProjectData | undefined>) => {
-    //   if (action.payload) {
-    //     addProjectToFirebase(action.payload);
-    //     return action.payload;
-    //   }
-    //   return state;
-    // },
+    addProject: (state, action: PayloadAction<ProjectData | undefined>) => {
+      if (action.payload) {
+        addProjectToFirebase(action.payload);
+        return action.payload;
+      }
+      return state;
+    },
     setProject: (state, action: PayloadAction<ProjectData | undefined>) => {
       if (action.payload) {
         return action.payload;
@@ -54,13 +56,12 @@ const projectSlice: any = createSlice({
   extraReducers: (builder) => {
     builder.addCase(addprojectToDB.fulfilled, (state, action) => {
       if (action.payload) {
-        return action.payload;
+        state = action.payload;
       }
-      return state;
     });
   },
 });
 
-export const { setProject, updateTitle } = projectSlice.actions;
+export const { setProject, updateTitle , addProject} = projectSlice.actions;
 export const selectProject = (state: { project: ProjectData }) => state.project;
 export default projectSlice.reducer;

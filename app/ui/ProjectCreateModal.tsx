@@ -12,8 +12,10 @@ import { FC, useRef, useState, KeyboardEvent } from "react";
 import { PiWarningDiamondFill } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { searchForProjectName } from "@/app/lib/actions";
-import { addprojectToDB } from "../redux/projectSlice";
+import { addProject } from "../redux/projectSlice";
 import { AppDispatch } from "../redux/store";
+import { setTasktoFirebase } from "../redux/taskSlice";
+import { useRouter } from "next/navigation";
 
 const ProjectCreateModal: FC<ProjectCreateModalProps> = ({
   email,
@@ -29,6 +31,7 @@ const ProjectCreateModal: FC<ProjectCreateModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [fieldError, setFieldError] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   const CreateProject = async () => {
     if (
@@ -113,9 +116,9 @@ const ProjectCreateModal: FC<ProjectCreateModalProps> = ({
         createdBy: email,
         team: filteredEmailList,
       };
-      dispatch(addprojectToDB(project));
-      // await dispatch(setTasktoFirebase(project.id));
-      // router.push(`/projects/${project.id}`);
+      dispatch(addProject(project));
+      await dispatch(setTasktoFirebase(project.id));
+      router.push(`/projects/${project.id}`);
     }
   };
 
